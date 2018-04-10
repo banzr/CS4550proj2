@@ -51,7 +51,7 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :jeopardy, Jeopardy.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "tasktracer",
+  username: "jeopardy",
   password: "aBc123$",
   database: "husky_jeopardy_dev",
   hostname: "localhost",
