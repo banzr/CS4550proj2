@@ -2,9 +2,8 @@ defmodule Jeopardy.Games.Game do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "games" do
-    field :name, :string
+    has_many :category_items, Jeopardy.Games.CategoryItem
 
     timestamps()
   end
@@ -12,7 +11,7 @@ defmodule Jeopardy.Games.Game do
   @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [])
+    |> validate_required([])
   end
 end
