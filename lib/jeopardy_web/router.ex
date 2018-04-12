@@ -29,7 +29,10 @@ defmodule JeopardyWeb.Router do
   scope "/api/v1", JeopardyWeb do
     pipe_through(:api)
     resources("/users", UserController, except: [:new, :edit])
-    resources("/games", GameController, except: [:new, :edit])
+    resources("/games", GameController)
     resources("/sessions", SessionController, except: [:new, :edit])
+    resources("/categories", CategoryController)
+    resources("/category_items", CategoryItemController)
+    resources("/clues", ClueController)
   end
 end
