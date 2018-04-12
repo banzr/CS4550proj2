@@ -11,7 +11,6 @@ defmodule JeopardyWeb.GameView do
   end
 
   def render("game.json", %{game: game}) do
-    %{id: game.id,
-      name: game.name}
+    %{id: game.id}
   end
 end
