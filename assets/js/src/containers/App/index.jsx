@@ -1,23 +1,27 @@
 import React from "react";
-import Home from "../../components/Home";
-import Nav from "../../components/Nav";
-import Login from "../../containers/Login/index";
+import Game from "../../containers/Game/index";
 import GamesList from "../../containers/GamesList/index";
+import Home from "../../components/Home";
+import Privacy from "../../components/Privacy";
+import Login from "../../containers/Login/index";
+import Nav from "../../components/Nav";
+import User from "../../containers/User/index";
 import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { decrement, increment } from "./actions";
-// import { history } from "../../store";
-import { makeSelectPlaceholder } from "./selectors";
 import { Route, Switch, withRouter } from "react-router-dom";
+import { selectPlaceholder } from "./selectors";
 
 class App extends React.Component {
+  // TODO: websocket stuff here (in constructor/etc)
+  // to load all session data and update on pushes
+
+  // TODO: remove placeholder/example stuff
   incrementBy3 = () => this.props.increment(3);
   decrementBy2 = () => this.props.decrement(2);
 
   render() {
-    console.log("hey, rendering app", this.props.location);
-
     const { incrementBy3, decrementBy2, props: { placeholder } } = this;
 
     return (
@@ -27,6 +31,22 @@ class App extends React.Component {
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/games" component={GamesList} />
+          <Route
+            exact
+            path="/users/:userId"
+            render={({ match: { params: { userId } } }) => (
+              <User userId={userId} />
+            )}
+          />
+          <Route
+            exact
+            path="/games/:gameId"
+            render={({ match: { params: { gameId } } }) => (
+              <Game gameId={gameId} />
+            )}
+          />
+          <Route exact path="/privacy" component={Privacy} />
+
         </Switch>
 
         {/* placeholder stuff for example of using actions/etc. */}
@@ -39,7 +59,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  placeholder: makeSelectPlaceholder()
+  placeholder: selectPlaceholder
 });
 
 const mapDispatchToProps = dispatch => ({

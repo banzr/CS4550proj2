@@ -22,6 +22,7 @@ defmodule JeopardyWeb.Router do
     get("/games/:id", PageController, :index)
     get("/users/:id", PageController, :index)
     get("/login", PageController, :index)
+    get("/privacy", PageController, :index)
   end
 
   # Other scopes may use custom stacks.

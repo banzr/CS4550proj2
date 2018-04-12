@@ -4,7 +4,7 @@ import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { login } from "./actions";
-import { makeSelectToken } from "./selectors";
+import { selectToken } from "./selectors";
 
 class Login extends React.Component {
   render() {
@@ -21,7 +21,7 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  token: makeSelectToken()
+  token: selectToken
 });
 
 const mapDispatchToProps = dispatch => ({
