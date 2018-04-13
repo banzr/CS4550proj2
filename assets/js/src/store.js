@@ -1,5 +1,6 @@
 import appReducer from "./containers/App/reducer";
 import loginReducer from "./containers/Login/reducer";
+import userReducer from "./containers/User/reducer";
 import { createBrowserHistory } from "history";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import { connectRouter, routerMiddleware } from "connected-react-router";
@@ -10,7 +11,8 @@ export const history = createBrowserHistory();
 // combine reducers from all containers
 const rootReducer = combineReducers({
   app: appReducer,
-  login: loginReducer
+  login: loginReducer,
+  user: userReducer
 });
 
 // connect routing to store to allow time-travel/etc. between routes

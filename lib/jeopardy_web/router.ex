@@ -40,5 +40,6 @@ defmodule JeopardyWeb.Router do
     resources("/category_items", CategoryItemController)
     resources("/clues", ClueController)
     post("/alexa_post", GameController, :alexa)
+    post("/profile", UserController, :get_profile)
   end
 end
