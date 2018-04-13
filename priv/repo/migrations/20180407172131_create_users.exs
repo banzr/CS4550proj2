@@ -3,7 +3,7 @@ defmodule Jeopardy.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :amazon_uid, :integer
+      add :amazon_uid, :string
       add :name, :string
 
       timestamps()

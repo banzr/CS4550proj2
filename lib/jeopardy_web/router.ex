@@ -1,12 +1,14 @@
 defmodule JeopardyWeb.Router do
   use JeopardyWeb, :router
+  import JeopardyWeb.Plugs
 
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
-    plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
+    plug(:fetch_game_session)
+    plug(:fetch_user)
   end
 
   pipeline :api do
@@ -23,16 +25,21 @@ defmodule JeopardyWeb.Router do
     get("/users/:id", PageController, :index)
     get("/login", PageController, :index)
     get("/privacy", PageController, :index)
+
+    post("/sessions", SessionController, :login)
+    delete("/sessions", SessionContrller, :logout)
+    post("/alexa_post", GameController, :alexa)
+    post("/new", GameController, :new)
   end
 
   # Other scopes may use custom stacks.
   scope "/api/v1", JeopardyWeb do
     pipe_through(:api)
-    resources("/users", UserController)
+    resources("/users", UserController, except: [:new, :edit])
     resources("/games", GameController)
-    resources("/sessions", SessionController, except: [:new, :edit])
     resources("/categories", CategoryController)
     resources("/category_items", CategoryItemController)
     resources("/clues", ClueController)
+    post("/alexa_post", GameController, :alexa)
   end
 end

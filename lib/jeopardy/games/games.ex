@@ -36,7 +36,7 @@ defmodule Jeopardy.Games do
 
   """
   def get_game!(id), do: Repo.get!(Game, id)
-
+  
   @doc """
   Creates a game.
 
@@ -133,6 +133,10 @@ defmodule Jeopardy.Games do
   """
   def get_category!(id), do: Repo.get!(Category, id)
 
+  def get_category_by_game_id(id) do
+    Repo.all(from g in Game, where: g.game_id == ^id)
+  end
+
   @doc """
   Creates a category.
 
@@ -228,6 +232,11 @@ defmodule Jeopardy.Games do
 
   """
   def get_clue!(id), do: Repo.get!(Clue, id)
+
+  def get_clue_by_category_id(id) do
+    IO.puts("#{id}") 
+    Repo.all(from c in Clue, where: c.category_id == ^id)    
+  end
 
   @doc """
   Creates a clue.

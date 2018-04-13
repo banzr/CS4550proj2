@@ -3,7 +3,7 @@ defmodule Jeopardy.Games.Game do
   import Ecto.Changeset
 
   schema "games" do
-    has_many :category_items, Jeopardy.Games.CategoryItem
+     has_many :categories, Jeopardy.Games.Category, foreign_key: :category_id
 
     timestamps()
   end
