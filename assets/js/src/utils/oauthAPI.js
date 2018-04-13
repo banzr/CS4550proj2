@@ -1,5 +1,5 @@
 const doPost = ({ data, endpoint, ...rest }) =>
-  $.ajax(`/api/v1/${endpoint}`, {
+  $.ajax(`/oauth/v1/${endpoint}`, {
     contentType: "application/json; charset=UTF-8",
     data: JSON.stringify(data),
     dataType: "json",

@@ -12,7 +12,11 @@ defmodule JeopardyWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
-    plug AlexaRequestVerifier
+  end
+
+  pipeline :alexa_api do
+    plug(:accepts, ["json"])
+    plug(AlexaRequestVerifier)
   end
 
   scope "/", JeopardyWeb do
@@ -34,7 +38,7 @@ defmodule JeopardyWeb.Router do
 
   # Other scopes may use custom stacks.
   scope "/api/v1", JeopardyWeb do
-    pipe_through(:api)
+    pipe_through(:alexa_api)
     resources("/users", UserController, except: [:new, :edit])
     resources("/games", GameController)
     resources("/sessions", SessionController)
@@ -42,6 +46,9 @@ defmodule JeopardyWeb.Router do
     resources("/category_items", CategoryItemController)
     resources("/clues", ClueController)
     post("/alexa_post", GameController, :alexa)
+  end
+
+  scope "/oauth/v1", JeopardyWeb do
     post("/profile", UserController, :get_profile)
   end
 end

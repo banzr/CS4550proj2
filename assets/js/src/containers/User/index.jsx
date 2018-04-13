@@ -1,6 +1,6 @@
 import React from "react";
 import Placeholder from "../../components/Placeholder";
-import api from "../../utils/api";
+import api from "../../utils/oauthAPI";
 import { connect } from "react-redux";
 import { selectUserSessions } from "./selectors";
 import { selectProfile } from "../App/selectors";
@@ -10,6 +10,8 @@ import { setLoaded, setProfile } from "./actions";
 class User extends React.Component {
   componentDidMount = () => {
     const { onProfileLoad, token, userId } = this.props;
+
+    if (!token) return;
 
     api.getProfile(userId, token, profile => {
       onProfileLoad(profile);
