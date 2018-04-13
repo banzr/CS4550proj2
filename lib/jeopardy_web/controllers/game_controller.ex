@@ -19,6 +19,8 @@ defmodule JeopardyWeb.GameController do
       categories = create_categories_from_api(game)
       IO.puts("HEY YO #{Kernel.inspect(categories)}")
       #new_game = Game.update_game(game, %{categories: categories})
+      categories_list = Enum.map(categories, fn cat -> cat.title end)
+      numbered_categories_list = Enum.join(Enum.map([1,2,3,4,5], fn n -> Kernel.inspect(n) <> " " <> Enum.at(categories_list, n - 1) end), ", ")
       conn
       |> put_status(:ok)
       |> json(%{
@@ -28,7 +30,7 @@ defmodule JeopardyWeb.GameController do
   response: %{
     outputSpeech: %{
       type: "PlainText",
-      text: "Today will provide you a new learning opportunity.  Stick with it and the possibilities will be endless. Can I help you with anything else?"
+      text: "Tri here's, new response. New game with following categories " <> numbered_categories_list <> ". Can I help you with anything else?"
     },
     card: %{
       type: "Simple",
@@ -56,7 +58,8 @@ defmodule JeopardyWeb.GameController do
     req = Poison.decode!(HTTPoison.get!(url).body)
     IO.puts("RESULT EY #{Kernel.inspect(req)}")
     valid_categories = Enum.filter(Enum.map(req, fn cat_req -> transform_category(cat_req, game) end), fn c -> c != nil end)
-    valid_categories |> Enum.with_index(1) |>Enum.map(fn {k,v}->{v,k} end) |> Map.new
+    #valid_categories |> Enum.with_index(1) |>Enum.map(fn {k,v}->{v,k} end) |> Map.new
+    valid_categories
   end
 
   def transform_category(cat_req, game) do
