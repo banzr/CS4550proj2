@@ -43,6 +43,7 @@ defmodule Jeopardy.Mixfile do
       {:cowboy, "~> 1.0"},
       {:httpoison, "~> 1.0"},
       {:poison, "~> 3.1"},
+      {:json, "~> 1.2"},
     ]
   end
 

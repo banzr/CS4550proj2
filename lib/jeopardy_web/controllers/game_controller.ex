@@ -13,15 +13,40 @@ defmodule JeopardyWeb.GameController do
     render(conn, "index.json", games: games)
   end
 
-  def create(conn, %{"game" => game_params}) do
+  def create(conn, %{}) do
     game_params = %{name: "random"}
     with {:ok, %Game{} = game} <- Games.create_game(game_params) do
       categories = create_categories_from_api(game)
       IO.puts("HEY YO #{Kernel.inspect(categories)}")
+      #new_game = Game.update_game(game, %{categories: categories})
       conn
-      |> put_status(:created)
-      |> put_resp_header("location", game_path(conn, :show, game))
-      |> render("show.json", game: game)
+      |> put_status(:ok)
+      |> json(%{
+  version: "1.0",
+  sessionAttributes: %{
+  },
+  response: %{
+    outputSpeech: %{
+      type: "PlainText",
+      text: "Today will provide you a new learning opportunity.  Stick with it and the possibilities will be endless. Can I help you with anything else?"
+    },
+    card: %{
+      type: "Simple",
+      title: "Horoscope",
+      content: "Today will provide you a new learning opportunity.  Stick with it and the possibilities will be endless."
+    },
+    reprompt: %{
+      outputSpeech: %{
+        type: "PlainText",
+        text: "Can I help you with anything else?"
+      }
+    },
+    shouldEndSession: false
+  }
+}
+)
+      #|> put_resp_header("location", game_path(conn, :show, game))
+      #|> render("show.json", game: game)
     end
   end
 
@@ -31,7 +56,7 @@ defmodule JeopardyWeb.GameController do
     req = Poison.decode!(HTTPoison.get!(url).body)
     IO.puts("RESULT EY #{Kernel.inspect(req)}")
     valid_categories = Enum.filter(Enum.map(req, fn cat_req -> transform_category(cat_req, game) end), fn c -> c != nil end)
-    valid_categories
+    valid_categories |> Enum.with_index(1) |>Enum.map(fn {k,v}->{v,k} end) |> Map.new
   end
 
   def transform_category(cat_req, game) do
