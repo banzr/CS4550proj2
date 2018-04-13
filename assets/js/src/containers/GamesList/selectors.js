@@ -1,57 +1,42 @@
 import { createSelector } from "reselect";
 import { selectSessions } from "../App/selectors";
-import { selectHighscorePlayers } from "../App/selectors";
 
 export const selectGames = createSelector(
   selectSessions,
   // transform sessions into { [game_id]: { highscore, players }} for each game
-  sessions =>{
+  sessions => {
     return sessions.reduce((games, session) => {
       const { game: { id: gameId } } = session;
       games[gameId] = getGameFromSession(games[gameId], session);
       return games;
-    }, {})}
-  );
+    }, {});
+  }
+);
 
-  export const showHighscorePlayers = createSelector(
-    selectHighscorePlayers,
-    highscorePlayers => {
-      var sorted;
-      do {
-        sorted = false;
-        for (var i=0; i < highscorePlayers.length-1; i++) {
-          if (highscorePlayers[i].score < highscorePlayers[i+1].score) {
-            var temp = highscorePlayers[i];
-            highscorePlayers[i] = highscorePlayers[i+1];
-            highscorePlayers[i+1] = temp;
-            sorted = true;
-          }
-        }
-      } while (sorted);
+const getGameFromSession = (game, session) => {
+  const { game: { id: gameId }, player, score } = session;
 
-      let len=10;
-      let newHighScoreplayers =[];
-      for (var i=0; i < len-1; i++) {
-        if(highscorePlayers[i]!=undefined)
-          newHighScoreplayers[i] = highscorePlayers[i];
-      }
-      return newHighScoreplayers;
-    });
+  if (!game) {
+    return { highscore: score, players: [player] };
+  }
 
-    const getGameFromSession = (game, session) => {
-      const { game: { id: gameId }, player, score } = session;
+  const { highscore, players } = game;
+  const { id: playerId } = player;
 
-      if (!game) {
-        return { highscore: score, players: [player] };
-      }
+  return {
+    highscore: score > highscore ? score : highscore,
+    players: players.find(({ id }) => id === playerId)
+      ? players
+      : [...players, player]
+  };
+};
 
-      const { highscore, players } = game;
-      const { id: playerId } = player;
-
-      return {
-        highscore: score > highscore ? score : highscore,
-        players: players.find(({ id }) => id === playerId)
-        ? players
-        : [...players, player]
-      };
-    };
+// get the top highest scoring sessions from all games
+const HIGH_SCORES_COUNT = 3; // how many high scores to show
+export const selectHighscoreSessions = createSelector(
+  selectSessions,
+  sessions => {
+    const sorted = _.sortBy(sessions, "score").reverse();
+    return _.first(sorted, HIGH_SCORES_COUNT);
+  }
+);

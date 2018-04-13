@@ -8,8 +8,11 @@ class Game extends React.Component {
     const { props: { gameId, sessions } } = this;
     return (
       <div>
-        <h1 style={{textAlign: 'center'}}>Sessions for Game {gameId}</h1>
-        <table className="table" style={{width: '55em', marginLeft: '15%', marginTop: '1%'}}>
+        <h1 style={{ textAlign: "center" }}>Sessions for Game {gameId}</h1>
+        <table
+          className="table"
+          style={{ width: "55em", marginLeft: "15%", marginTop: "1%" }}
+        >
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -27,7 +30,6 @@ class Game extends React.Component {
             ))}
           </tbody>
         </table>
-
       </div>
     );
   }

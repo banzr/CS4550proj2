@@ -1,18 +1,35 @@
 import React from "react";
 import Placeholder from "../../components/Placeholder";
+import api from "../../utils/api";
 import { connect } from "react-redux";
 import { selectUserSessions } from "./selectors";
+import { selectProfile } from "../App/selectors";
+import { selectToken } from "../Login/selectors";
+import { setLoaded, setProfile } from "./actions";
 
 class User extends React.Component {
-  // TODO: maybe load user data via JSON?
-  // because can have user with no sessions, possibly?
+  componentDidMount = () => {
+    const { onProfileLoad, token, userId } = this.props;
+
+    api.getProfile(userId, token, profile => {
+      onProfileLoad(profile);
+    });
+  };
 
   render() {
-    const { props: { userId, sessions } } = this;
+    const { props: { profile, userId, sessions } } = this;
+
+    if (!profile) {
+      return <div>Must be logged in as this user to view their profile</div>;
+    }
+
     return (
       <div>
-        <h1 style={{textAlign : 'center'}}>Sessions for Player {userId}</h1>
-        <table className="table" style={{width: '55em', marginLeft: '15%', marginTop: '1%'}}>
+        <h1 style={{ textAlign: "center" }}>Sessions for {profile.name}</h1>
+        <table
+          className="table"
+          style={{ width: "55em", marginLeft: "15%", marginTop: "1%" }}
+        >
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -36,7 +53,13 @@ class User extends React.Component {
 }
 
 const mapStateToProps = (state, { userId }) => ({
-  sessions: selectUserSessions(state, userId)
+  sessions: selectUserSessions(state, userId),
+  profile: selectProfile(state),
+  token: selectToken(state)
 });
 
-export default connect(mapStateToProps)(User);
+const mapDispatchToProps = dispatch => ({
+  onProfileLoad: profile => dispatch(setProfile(profile))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(User);
