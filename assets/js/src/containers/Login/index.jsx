@@ -7,14 +7,6 @@ import { createStructuredSelector } from "reselect";
 import { login } from "./actions";
 import { selectToken } from "./selectors";
 
-const handleSocialLogin = user => {
-  console.log(user);
-};
-
-const handleSocialLoginFailure = err => {
-  console.error(err);
-};
-
 class Login extends React.Component {
   setNodeRef(provider, node) {
     if (node) {
@@ -24,22 +16,10 @@ class Login extends React.Component {
 
   render() {
     const { props: { handleLogin, token } } = this;
-    console.log(window.location.protocol);
     return (
       <div>
         <Placeholder name="login" />
-        <div>
-          <AmazonButton
-            provider="amazon"
-            appId="amzn1.application.159bb31fe8f84dd685cd6ae4e930b5e9"
-            getInstance={this.setNodeRef.bind(this, "amazon")}
-            onLoginSuccess={handleSocialLogin}
-            onLoginFailure={handleSocialLoginFailure}
-            key={"amazon"}
-          >
-            Login with Amazon
-          </AmazonButton>
-        </div>
+        <AmazonButton onClick={handleLogin}/>
       </div>
     );
   }
