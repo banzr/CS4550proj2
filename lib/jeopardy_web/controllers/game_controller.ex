@@ -23,6 +23,7 @@ defmodule JeopardyWeb.GameController do
     #data = request
     IO.puts("#{Kernel.inspect(data)}")
     answer = data
+    IO.puts("[DEBUG] Session:" <> answer["session"])
     session = answer["session"]
     request = answer["request"]
     userId = session["user"]["userId"]
