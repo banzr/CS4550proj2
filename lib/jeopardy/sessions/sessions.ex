@@ -37,7 +37,10 @@ defmodule Jeopardy.Sessions do
   ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id)
+  def get_session!(id), do:
+    Repo.get!(Session, id)
+    |> Repo.preload([:user, :game])
+
 
   @doc """
   Creates a session.

@@ -7,6 +7,7 @@ defmodule Jeopardy.Users.User do
     field :amazon_uid, :string
     field :name, :string
     has_many :sessions, Jeopardy.Sessions.Session, foreign_key: :session_id
+    field :unfinished_id, :integer
 
     timestamps()
   end
@@ -14,7 +15,7 @@ defmodule Jeopardy.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:amazon_uid, :name])
+    |> cast(attrs, [:amazon_uid, :name, :unfinished_id])
     |> validate_required([:amazon_uid])
   end
 end
