@@ -34,8 +34,10 @@ const getGameFromSession = (game, session) => {
 const HIGH_SCORES_COUNT = 10; // how many high scores to show
 export const selectHighscoreSessions = createSelector(
   selectSessions,
-  sessions => {
-    const sorted = _.sortBy(sessions, "score").reverse();
-    return _.first(sorted, HIGH_SCORES_COUNT);
-  }
+  sessions =>
+    _.chain(sessions)
+      .sortBy("score")
+      .reverse()
+      .first(HIGH_SCORES_COUNT)
+      .value()
 );
