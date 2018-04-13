@@ -30,43 +30,49 @@ defmodule JeopardyWeb.GameController do
     url = "http://jservice.io/api/categories?count=10&offset=" <> offset
     req = Poison.decode!(HTTPoison.get!(url).body)
     IO.puts("RESULT EY #{Kernel.inspect(req)}")
-    categories = []
-    for cat_req <- req do
-      cat_params = %{"title": cat_req["title"]}
-      cat_url = "http://jservice.io/api/category?id=" <> Kernel.inspect(cat_req["id"])
-      cat = Poison.decode!(HTTPoison.get!(cat_url).body)
-      if (is_valid_category(cat) && Kernel.length(categories) < 5) do
-        with {:ok, %Category{} = category} <- Games.create_category(cat_params) do
-          categories = categories ++ [category]
-          IO.puts("CAT #{Kernel.inspect(category)}")
-          val = 200
-          Games.create_category_item(%{game_id: game.id, category_id: category.id})
-          for n <- [0,1,2,3,4] do
-            categories = Map.put(categories, n, category)
-            [ clue_req | tail ] = Enum.filter(cat["clues"], fn clue -> clue["value"] == val*(n+1) end)
-            IO.puts("CLUE REQ #{Kernel.inspect(clue_req)}")
-            clue_params = %{"answer": clue_req["answer"], "question": clue_req["question"], "value": clue_req["value"], "category_id": category.id}
-            IO.puts("CLUE PARAMS #{Kernel.inspect(clue_params)}")
-            Games.create_clue(clue_params)
-          end
+    valid_categories = Enum.filter(Enum.map(req, fn cat_req -> transform_category(cat_req, game) end), fn c -> c != nil end)
+    valid_categories
+  end
+
+  def transform_category(cat_req, game) do
+    cat_params = %{"title": cat_req["title"]}
+    cat_url = "http://jservice.io/api/category?id=" <> Kernel.inspect(cat_req["id"])
+    cat = Poison.decode!(HTTPoison.get!(cat_url).body)
+    if (is_valid_category(cat)) do
+      with {:ok, %Category{} = category} <- Games.create_category(cat_params) do
+        IO.puts("CAT #{Kernel.inspect(category)}")
+        val = 200
+        Games.create_category_item(%{game_id: game.id, category_id: category.id})
+        for n <- [0,1,2,3,4] do
+          [ clue_req | tail ] = Enum.filter(cat["clues"], fn clue -> clue["value"] == val*(n+1) end)
+          IO.puts("CLUE REQ #{Kernel.inspect(clue_req)}")
+          clue_params = %{"answer": clue_req["answer"], "question": clue_req["question"], "value": clue_req["value"], "category_id": category.id}
+          IO.puts("CLUE PARAMS #{Kernel.inspect(clue_params)}")
+          Games.create_clue(clue_params)
         end
-      end
+        category
+      end        
+    else
+      nil
     end
-    categories
   end
 
   def is_valid_category(category) do
-    clue_list = []
-    val = 200
-    for n <- [0,1,2,3,4] do
-      filtered = Enum.filter(category["clues"], fn cl -> cl["value"] == val*(n+1) end)
-      if (filtered !== []) do
-        [ clue | tail ] = filtered
-        clue_list = clue_list ++ clue
-      end
-    end 
-    Kernel.length(clue_list) == 5
+    clue_list = [0,1,2,3,4]
+    valid_clues = Enum.filter(Enum.map(clue_list, fn n -> extract_clue(n, category) end), fn c -> c != nil end)
+    Kernel.length(valid_clues) == 5
   end
+    
+  def extract_clue(n, category) do
+    val = 200
+    filtered = Enum.filter(category["clues"], fn cl -> cl["value"] == val*(n+1) end)
+    if (filtered !== []) do
+      [ clue | tail ] = filtered
+      clue
+    else 
+      nil
+    end
+  end 
 
   def show(conn, %{"id" => id}) do
     game = Games.get_game!(id)
