@@ -4,13 +4,12 @@ import { selectSessions } from "../App/selectors";
 export const selectGames = createSelector(
   selectSessions,
   // transform sessions into { [game_id]: { highscore, players }} for each game
-  sessions => {
-    return sessions.reduce((games, session) => {
+  sessions =>
+    sessions.reduce((games, session) => {
       const { game: { id: gameId } } = session;
       games[gameId] = getGameFromSession(games[gameId], session);
       return games;
-    }, {});
-  }
+    }, {})
 );
 
 const getGameFromSession = (game, session) => {
