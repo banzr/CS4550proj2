@@ -32,7 +32,7 @@ const getGameFromSession = (game, session) => {
 };
 
 // get the top highest scoring sessions from all games
-const HIGH_SCORES_COUNT = 3; // how many high scores to show
+const HIGH_SCORES_COUNT = 10; // how many high scores to show
 export const selectHighscoreSessions = createSelector(
   selectSessions,
   sessions => {
