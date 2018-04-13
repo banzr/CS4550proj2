@@ -51,13 +51,21 @@ defmodule JeopardyWeb.GameController do
     IO.puts("AYO YO #{Kernel.inspect(data)}")
     game_params = %{name: "random"}
 
-    with {:ok, %Game{} = game} <- Games.create_game(game_params) do      
+    with {:ok, %Game{} = game} <- Games.create_game(game_params) do
       categories = create_categories_from_api(game)
       categories_id = Enum.map(categories, fn cat -> cat.id end)
       IO.puts("HEY YO #{Kernel.inspect(game)}")
       categories_list = Enum.map(categories, fn cat -> cat.title end)
-      session_params = %{game_id: game.id, user_id: user.id, score: 0, answers: [], answered_clues: []}
-      with {:ok , %Session{} = session } <- Sessions.create_session(session_params) do
+
+      session_params = %{
+        game_id: game.id,
+        user_id: user.id,
+        score: 0,
+        answers: [],
+        answered_clues: []
+      }
+
+      with {:ok, %Session{} = session} <- Sessions.create_session(session_params) do
         numbered_categories_list =
           Enum.join(
             Enum.map([1, 2, 3, 4, 5], fn n ->
@@ -109,7 +117,7 @@ defmodule JeopardyWeb.GameController do
     offset = Kernel.inspect(:rand.uniform(100))
     url = "http://jservice.io/api/categories?count=10&offset=" <> offset
     req = Poison.decode!(HTTPoison.get!(url).body)
-#    IO.puts("RESULT EY #{Kernel.inspect(req)}")
+    #    IO.puts("RESULT EY #{Kernel.inspect(req)}")
 
     valid_categories =
       Enum.filter(Enum.map(req, fn cat_req -> transform_category(cat_req, game) end), fn c ->
@@ -135,7 +143,7 @@ defmodule JeopardyWeb.GameController do
             Enum.filter(cat["clues"], fn clue -> clue["value"] == val * (n + 1) end)
 
           #          IO.puts("CLUE REQ #{Kernel.inspect(clue_req)}")
-          if (String.contains?(clue_req["answer"],"<")) do
+          if String.contains?(clue_req["answer"], "<") do
             IO.puts("CLUE #{clue_req["answer"]}")
             IO.puts("CLUE ANSWSER #{remove_tag(clue_req["answer"])}")
           end
@@ -179,12 +187,12 @@ defmodule JeopardyWeb.GameController do
     end
   end
 
-  def remove_tag(word) do    
+  def remove_tag(word) do
     if String.contains?(word, ">") do
-      Enum.at(String.split(Enum.at(String.split(word, ">", parts: 2),1), "<", parts: 2), 0)
+      Enum.at(String.split(Enum.at(String.split(word, ">", parts: 2), 1), "<", parts: 2), 0)
     else
       word
-    end  
+    end
   end
 
   def show(conn, %{"id" => id}) do
@@ -209,14 +217,14 @@ defmodule JeopardyWeb.GameController do
   end
 
   def parse_answer(conn, data, user) do
-#    IO.puts("Parsing answer #{Kernel.inspect(data)}")
+    #    IO.puts("Parsing answer #{Kernel.inspect(data)}")
     answer = data
     session = answer["session"]
     user = session["user"]
     attributes = session["attributes"]
     categories = attributes["categories"]
     numbered_categories = attributes["numbered"]
-#    IO.puts("CATEGORIES #{Kernel.inspect(categories)}")
+    #    IO.puts("CATEGORIES #{Kernel.inspect(categories)}")
     answered_clues = attributes["clues"]
     game_id = attributes["game_id"]
     clue_list = attributes["clues"]
@@ -224,8 +232,8 @@ defmodule JeopardyWeb.GameController do
     request = answer["request"]
     intent = request["intent"]
     name = intent["name"]
-    sessionId = attributes["session_id"]  
-  
+    sessionId = attributes["session_id"]
+
     case name do
       "restartGame" ->
         create(conn, data, user)
@@ -234,7 +242,7 @@ defmodule JeopardyWeb.GameController do
         value = String.to_integer(intent["slots"]["category_no"]["value"])
         category_id = Enum.at(categories, value - 1)
         questions = Games.get_clue_by_category_id(category_id)
-        
+
         value_questions =
           Enum.join(
             Enum.reverse(
@@ -378,7 +386,9 @@ defmodule JeopardyWeb.GameController do
               value,
               numbered_categories,
               0,
-              ". The correct answer is " <> correctA <> ". The game has ended. Your final score is " <>
+              ". The correct answer is " <>
+                correctA <>
+                ". The game has ended. Your final score is " <>
                 Kernel.inspect(score) <> ". Would you like to play another game?",
               attributes
             )
@@ -413,18 +423,30 @@ defmodule JeopardyWeb.GameController do
     app_id == "abcdef"
   end
 
-  def response_for_answer(conn, new_score, clue_list, user_answer, categories_list, s, response, attributes) do
+  def response_for_answer(
+        conn,
+        new_score,
+        clue_list,
+        user_answer,
+        categories_list,
+        s,
+        response,
+        attributes
+      ) do
     result = "correct"
-    
+
     sessionId = attributes["session_id"]
     session = Sessions.get_session!(sessionId)
 
     categories = attributes["categories"]
 
-    session_params = %{answered_clues: attributes["clues"], answers: [user_answer] ++ session.answers, score: String.to_integer(new_score)}
+    session_params = %{
+      answered_clues: attributes["clues"],
+      answers: [user_answer] ++ session.answers,
+      score: String.to_integer(new_score)
+    }
 
     Sessions.update_session(session, session_params)
-    
 
     if s == 0 do
       result = "wrong"

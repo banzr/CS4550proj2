@@ -6,6 +6,7 @@
     "watch": "brunch watch --stdin"
   },
   "dependencies": {
+    "ask-cli": "^1.1.6",
     "bootstrap": "^4.0.0",
     "connected-react-router": "^4.3.0",
     "jquery": "^3.3.1",
@@ -20,11 +21,11 @@
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-social-login": "^3.4.2",
     "reactstrap": "^5.0.0-alpha.4",
     "redux": "^3.7.2",
     "reselect": "^3.0.1",
-    "underscore": "^1.8.3",
-    "ask-cli": "^1.1.6"
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "babel-brunch": "6.1.1",
