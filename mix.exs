@@ -20,7 +20,7 @@ defmodule Jeopardy.Mixfile do
   def application do
     [
       mod: {Jeopardy.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :alexa_request_verifier]
     ]
   end
 
@@ -44,6 +44,7 @@ defmodule Jeopardy.Mixfile do
       {:httpoison, "~> 1.0"},
       {:poison, "~> 3.1"},
       {:json, "~> 1.2"},
+      {:alexa_request_verifier, "~> 0.1.4"},
     ]
   end
 

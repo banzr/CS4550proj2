@@ -12,6 +12,7 @@ defmodule JeopardyWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug AlexaRequestVerifier
   end
 
   scope "/", JeopardyWeb do
