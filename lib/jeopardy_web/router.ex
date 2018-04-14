@@ -24,6 +24,8 @@ defmodule JeopardyWeb.Router do
     post "/sessions", SessionController, :login
     delete "/sessions", SessionContrller, :logout
 
+    post "/alexa_post", GameController, :create
+
     post "/new", GameController, :new
   end
 
