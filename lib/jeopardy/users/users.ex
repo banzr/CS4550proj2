@@ -101,4 +101,8 @@ defmodule Jeopardy.Users do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  def get_user_by_name(name) do
+    Repo.get_by(User, name: name)
+  end
 end

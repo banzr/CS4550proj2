@@ -4,7 +4,6 @@ defmodule Jeopardy.Repo.Migrations.CreateSessions do
   def change do
     create table(:sessions) do
       add :score, :integer
-      add :answered_clues, {:array, :integer}
       add :game_id, references(:games, on_delete: :delete_all)
       add :user_id, references(:users, on_delete: :delete_all)
 

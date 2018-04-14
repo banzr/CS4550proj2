@@ -13,7 +13,29 @@ defmodule JeopardyWeb.GameController do
     render(conn, "index.json", games: games)
   end
 
-  def create(conn, %{}) do
+  def alexa(conn, data) do
+    answer = Poison.decode!(data)
+    session = answer["session"]
+    userId = session["user"]["userId"]
+    accessToken = session["user"]["accessToken"]
+    attributes = session["attributes"]
+    answered_clues = attributes["clues"]
+    game_id = attributes["game_id"]
+    clue_list = attributes["questions"]
+    user_input = answer["context"]
+    #if new session, get user and new game
+    if (session["new"] == true) do
+      user = Users.get_or_create_userId(userId)
+      
+        
+    else
+      answer
+    end
+  end
+
+  def create(conn, data) do
+    
+    IO.puts("AYO YO #{Kernel.inspect(data)}")
     game_params = %{name: "random"}
     with {:ok, %Game{} = game} <- Games.create_game(game_params) do
       categories = create_categories_from_api(game)
@@ -26,6 +48,7 @@ defmodule JeopardyWeb.GameController do
       |> json(%{
   version: "1.0",
   sessionAttributes: %{
+    clues: []
   },
   response: %{
     outputSpeech: %{
@@ -68,14 +91,14 @@ defmodule JeopardyWeb.GameController do
     cat = Poison.decode!(HTTPoison.get!(cat_url).body)
     if (is_valid_category(cat)) do
       with {:ok, %Category{} = category} <- Games.create_category(cat_params) do
-        IO.puts("CAT #{Kernel.inspect(category)}")
+#        IO.puts("CAT #{Kernel.inspect(category)}")
         val = 200
         Games.create_category_item(%{game_id: game.id, category_id: category.id})
         for n <- [0,1,2,3,4] do
           [ clue_req | tail ] = Enum.filter(cat["clues"], fn clue -> clue["value"] == val*(n+1) end)
-          IO.puts("CLUE REQ #{Kernel.inspect(clue_req)}")
+#          IO.puts("CLUE REQ #{Kernel.inspect(clue_req)}")
           clue_params = %{"answer": clue_req["answer"], "question": clue_req["question"], "value": clue_req["value"], "category_id": category.id}
-          IO.puts("CLUE PARAMS #{Kernel.inspect(clue_params)}")
+#          IO.puts("CLUE PARAMS #{Kernel.inspect(clue_params)}")
           Games.create_clue(clue_params)
         end
         category
@@ -121,4 +144,71 @@ defmodule JeopardyWeb.GameController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def parse_answer(conn, %{data: data}) do
+    answer = Poison.decode!(data)
+    session = answer["session"]
+    user = session["user"]
+    attributes = session["attributes"]
+    answered_clues = attributes["clues"]
+    game_id = attributes["game_id"]
+    clue_list = attributes["questions"]
+    user_input = answer["context"]
+        
+  end
+
+  def is_my_application(app_id) do
+    app_id == "abcdef"
+  end
+
+@doc """
+{
+  "version": "1.0",
+  "session": {
+    "new": true,
+    "sessionId": "amzn1.echo-api.session.[unique-value-here]",
+    "application": {
+      "applicationId": "amzn1.ask.skill.[unique-value-here]"
+    },
+    "attributes": {
+      "key": "string value"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.[unique-value-here]",
+      "accessToken": "Atza|AAAAAAAA...",
+      "permissions": {
+        "consentToken": "ZZZZZZZ..."
+      }
+    }
+  },
+  "context": {
+    "System": {
+      "device": {
+        "deviceId": "string",
+        "supportedInterfaces": {
+          "AudioPlayer": {}
+        }
+      },
+      "application": {
+        "applicationId": "amzn1.ask.skill.[unique-value-here]"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.[unique-value-here]",
+        "accessToken": "Atza|AAAAAAAA...",
+        "permissions": {
+          "consentToken": "ZZZZZZZ..."
+        }
+      },
+      "apiEndpoint": "https://api.amazonalexa.com",
+      "apiAccessToken": "AxThk..."
+    },
+    "AudioPlayer": {
+      "playerActivity": "PLAYING",
+      "token": "audioplayer-token",
+      "offsetInMilliseconds": 0
+    }
+  },
+  "request": {}
+}
+"""
 end

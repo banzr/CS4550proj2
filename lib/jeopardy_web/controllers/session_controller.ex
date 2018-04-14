@@ -3,7 +3,8 @@ defmodule JeopardyWeb.SessionController do
 
   alias Jeopardy.Sessions
   alias Jeopardy.Sessions.Session
-
+  alias Jeopardy.Users
+  
   action_fallback JeopardyWeb.FallbackController
 
   def index(conn, _params) do
@@ -45,7 +46,7 @@ defmodule JeopardyWeb.SessionController do
 
     if user do
       session = conn.assigns[:current_session]
-      Jeopardy.Sessions.Session.update_session(session, %{user_id: user.id})
+      Sessions.update_session(session, %{user_id: user.id})
 
       conn
       |> put_session(:user_id, user.id)

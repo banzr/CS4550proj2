@@ -1,6 +1,8 @@
 defmodule JeopardyWeb.Plugs do
   import Plug.Conn
 
+  alias Jeopardy.Sessions
+
   def fetch_user(conn, _opts) do
     user_id = get_session(conn, :user_id)
     if user_id do
@@ -14,7 +16,7 @@ defmodule JeopardyWeb.Plugs do
 
   def fetch_game_session(conn, _opts) do
     session_id = get_session(conn, :session_id)
-    session = Jeopary.Sessions.get_or_create_cart(session_id)
+    session = Sessions.get_or_create_session(session_id)
     conn
     |> put_session(:session_id, session.id)
     |> assign(:current_session, session)

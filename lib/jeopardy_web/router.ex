@@ -6,7 +6,6 @@ defmodule JeopardyWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
-    plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_game_session
     plug :fetch_user
@@ -23,9 +22,7 @@ defmodule JeopardyWeb.Router do
     
     post "/sessions", SessionController, :login
     delete "/sessions", SessionContrller, :logout
-
     post "/alexa_post", GameController, :create
-
     post "/new", GameController, :new
   end
 
