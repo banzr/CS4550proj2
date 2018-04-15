@@ -211,8 +211,8 @@ defmodule JeopardyWeb.GameController do
         category_id = Enum.at(categories, value - 1)
         questions = Games.get_clue_by_category_id(category_id)
 
-        value_questions = Enum.join(
-          Enum.map(Enum.filter(questions, fn k -> !Enum.member?(answered_clues, k.id) end), fn q -> Kernel.inspect(q.value) end), ", ")
+        value_questions = Enum.join(Enum.reverse(
+          Enum.map(Enum.filter(questions, fn k -> !Enum.member?(answered_clues, k.id) end), fn q -> Kernel.inspect(q.value) end)), ", ")
 
         conn
         |> put_status(:ok)
@@ -230,7 +230,7 @@ defmodule JeopardyWeb.GameController do
             outputSpeech: %{
               type: "PlainText",
               text:
-                "Current category has questions with following values " <>
+                "Current category has questions with following values: " <>
                   value_questions <> ". Please choose a question by its value"
             },
             card: %{
@@ -273,7 +273,7 @@ defmodule JeopardyWeb.GameController do
             outputSpeech: %{
               type: "PlainText",
               text:
-                "The question you chose with value " <> Kernel.inspect(value) <> " is " <> question.question <> ". Please provide an answer"
+                "The question you chose with value " <> Kernel.inspect(value) <> " is: " <> question.question <> ". Please provide an answer"
             },
             card: %{
               type: "Simple",
