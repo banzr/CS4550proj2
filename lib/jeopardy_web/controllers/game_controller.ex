@@ -17,6 +17,9 @@ defmodule JeopardyWeb.GameController do
     data = request
     answer = data
     session = answer["session"]
+    context = answer["context"]
+    request = context["request"]
+    type = request["type"]
     #    userId = session["user"]["userId"]
     #    accessToken = session["user"]["accessToken"]
     #    attributes = session["attributes"]
@@ -25,7 +28,7 @@ defmodule JeopardyWeb.GameController do
     #    clue_list = attributes["questions"]
     #    user_input = answer["context"]
     # if new session, get user and new game
-    if session == nil || session["new"] == true do
+    if (session == nil || session["new"] == true || type == "LaunchRequest") do
       create(conn, data)
     else
       parse_answer(conn, data)
@@ -190,7 +193,8 @@ defmodule JeopardyWeb.GameController do
     intent = request["intent"]
     name = intent["name"]
 
-    if name == "chooseCategory" do
+    case name do
+      "chooseCategory" ->
       value = String.to_integer(intent["slots"]["category_no"]["value"])
       category_id = Enum.at(categories, value - 1)
       questions = Games.get_clue_by_category_id(category_id)
@@ -202,7 +206,8 @@ defmodule JeopardyWeb.GameController do
         version: "1.0",
         sessionAttributes: %{
           clues: clue_list,
-          categories: categories
+          categories: categories,
+          category_id: category_id
         },
         response: %{
           outputSpeech: %{
@@ -227,7 +232,62 @@ defmodule JeopardyWeb.GameController do
           shouldEndSession: false
         }
       })
-    else
+    "chooseQuestion" ->
+      value = String.to_integer(intent["slots"]["question_no"]["value"])
+      category_id = String.to_integer(attributes["category_id"])
+      questions = Games.get_clue_by_category_id(category_id)
+      [ question | _ ] = Enum.filter(questions, fn q -> q.value == value end)
+      #TODO, make sur equestion is not asked before      
+      conn
+      |> put_status(:ok)
+      |> json(%{
+        version: "1.0",
+        sessionAttributes: %{
+          clues: [question.id] ++ clue_list,
+          categories: categories,
+          answer: question.answer
+        },
+        response: %{
+          outputSpeech: %{
+            type: "PlainText",
+            text:
+              "The question you chose is " <>
+                question.question <> ". Please provide an answer"
+          },
+          card: %{
+            type: "Simple",
+            title: "Jeopary",
+            content:
+              "The questin you chose with value " <> question.value " is " <>
+                question.question <> " Please provide an answer"
+          },
+          reprompt: %{
+            outputSpeech: %{
+              type: "PlainText",
+              text: "Can I help you with anything else?"
+            }
+          },
+          shouldEndSession: false
+        }
+      })
+    "chooseAnswer" ->
+      value = String.to_integer(intent["slots"]["answer"]["value"])
+      score = attributes["score"]
+      qValue = attributes["qValue"]      
+      categories_list =
+        Enum.join(
+          Enum.map([1, 2, 3, 4, 5], fn n ->
+            Kernel.inspect(n) <> " " <> Enum.at(categories, n - 1)
+          end),
+          ", "
+        )
+      if value == attributes["answer"] do
+        new_score = Kernel.inspect(score + qValue)
+        response_for_answer(conn, new_score, clue_list, categories, categories_list, "correct")
+      else 
+        response_for_answer(conn, Kernel.inspect(score), clue_list, categories, categories_list, "wrong")
+      end    
+    true ->    
       conn
       |> put_status(:error)
     end
@@ -235,6 +295,42 @@ defmodule JeopardyWeb.GameController do
 
   def is_my_application(app_id) do
     app_id == "abcdef"
+  end
+
+  def response_for_answer(conn, new_score, clue_list, categories, categories_list, result) do
+        conn
+        |> put_status(:ok)
+        |> json(%{
+          version: "1.0",
+          sessionAttributes: %{
+            clues: clue_list,
+            categories: categories,
+            answer: "",
+            qValue: 0,
+            score: new_score
+          },
+          response: %{
+            outputSpeech: %{
+              type: "PlainText",
+              text:
+                "You are " <> result <> ". Your score is " <>
+                  new_score <> ". Categories list " <> categories_list
+            },
+            card: %{
+              type: "Simple",
+              title: "Jeopary",
+              content:
+                "You are " <> result <> ". Score: " <> new_score
+            },
+            reprompt: %{
+              outputSpeech: %{
+                type: "PlainText",
+                text: "Can I help you with anything else?"
+              }
+            },
+            shouldEndSession: false
+          }
+        })
   end
 
   @doc """
