@@ -229,6 +229,10 @@ defmodule Jeopardy.Games do
   """
   def get_clue!(id), do: Repo.get!(Clue, id)
 
+  def get_clue_by_category_id(id) do
+    Repo.get_by(Clue, category_id: id)
+  end
+
   @doc """
   Creates a clue.
 
