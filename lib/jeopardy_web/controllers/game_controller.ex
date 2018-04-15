@@ -212,7 +212,7 @@ defmodule JeopardyWeb.GameController do
         questions = Games.get_clue_by_category_id(category_id)
 
         value_questions = Enum.join(
-          Enum.map(questions, fn q -> Kernel.inspect(q.value) end), ", ")
+          Enum.map(Enum.filter(questions, fn k -> !Enum.member?(answered_clues, k.id) end), fn q -> Kernel.inspect(q.value) end), ", ")
 
         conn
         |> put_status(:ok)
@@ -295,20 +295,30 @@ defmodule JeopardyWeb.GameController do
         value = intent["slots"]["answer"]["value"]
         score = attributes["score"]
         qValue = attributes["qValue"]
-        IO.puts("categories #{Kernel.inspect(value)}")        
+        len = Kernel.length(answered_clues)
 
-        if value == attributes["answer"] do
+        IO.puts("categories #{Kernel.inspect(value)}")        
+        if (value == attributes["answer"] || "The " <> value == attributes["answer"] || "the " <> value == attributes["answer"]) do
           new_score = Kernel.inspect(score + qValue)
-          response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1)
+          if (len == 5) do
+            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The game has ended. Your final score is " <> new_score <> ". Would you like to play another game?")
+          else
+            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". Your current score is " <> new_score <> " You have " <> Kernel.inspect(10 - len) <> " questions left. Category list " <> numbered_categories <> ". Please choose a category")
+          end
         else
-          response_for_answer(
+          if (len == 5) do
+            response_for_answer(conn, Kernel.inspect(score), clue_list, categories, numbered_categories, 0, ". The game has ended. Your final score is " <> Kernel.inspect(score) <> ". Would you like to play another game?")
+          else
+            response_for_answer(
             conn,
             Kernel.inspect(score),
             clue_list,
             categories,
             numbered_categories,
-            0
+            0,
+            ". Your current score is " <> Kernel.inspect(score) <> " You have " <> Kernel.inspect(10 - len)  <> " questions left. Category list " <> numbered_categories <> ". Please choose a category"
           )
+          end
         end
 
       _ ->
@@ -321,7 +331,7 @@ defmodule JeopardyWeb.GameController do
     app_id == "abcdef"
   end
 
-  def response_for_answer(conn, new_score, clue_list, categories, categories_list, s) do
+  def response_for_answer(conn, new_score, clue_list, categories, categories_list, s, response) do
     result = "correct"
     if s == 0 do
       result = "wrong"
@@ -342,12 +352,12 @@ defmodule JeopardyWeb.GameController do
         outputSpeech: %{
           type: "PlainText",
           text:
-            "You are " <> result <> ". Your current score is " <> new_score <> ". Categories list " <> categories_list <> ".Please pick a category"
+            "You are " <> result <> response
         },
         card: %{
           type: "Simple",
           title: "Jeopary",
-          content: "You are " <> result <> ". Score: " <> new_score
+          content: "You are " <> result <> response
         },
         reprompt: %{
           outputSpeech: %{
