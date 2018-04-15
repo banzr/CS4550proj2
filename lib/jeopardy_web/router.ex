@@ -22,7 +22,7 @@ defmodule JeopardyWeb.Router do
     
     post "/sessions", SessionController, :login
     delete "/sessions", SessionContrller, :logout
-    post "/alexa_post", GameController, :create
+
     post "/new", GameController, :new
   end
 
@@ -34,5 +34,6 @@ defmodule JeopardyWeb.Router do
     resources "/categories", CategoryController
     resources "/category_items", CategoryItemController
     resources "/clues", ClueController
+    post "/alexa_post", GameController, :create
   end
 end
