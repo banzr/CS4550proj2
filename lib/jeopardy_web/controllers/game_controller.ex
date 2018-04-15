@@ -68,7 +68,8 @@ defmodule JeopardyWeb.GameController do
           clues: [],
           categories: categories_id,
           answer: "",
-          score: 0
+          score: 0,
+          numbered: numbered_categories_list
         },
         response: %{
           outputSpeech: %{
@@ -194,6 +195,8 @@ defmodule JeopardyWeb.GameController do
     user = session["user"]
     attributes = session["attributes"]
     categories = attributes["categories"]
+    numbered_categories = attributes["numbered"]
+    IO.puts("CATEGORIES #{Kernel.inspect(categories)}")
     answered_clues = attributes["clues"]
     game_id = attributes["game_id"]
     clue_list = attributes["clues"]
@@ -208,8 +211,8 @@ defmodule JeopardyWeb.GameController do
         category_id = Enum.at(categories, value - 1)
         questions = Games.get_clue_by_category_id(category_id)
 
-        value_questions =
-          Enum.join(Enum.map(questions, fn q -> Kernel.inspect(q.value) end), ", ")
+        value_questions = Enum.join(
+          Enum.map(questions, fn q -> Kernel.inspect(q.value) end), ", ")
 
         conn
         |> put_status(:ok)
@@ -220,7 +223,8 @@ defmodule JeopardyWeb.GameController do
             categories: categories,
             category_id: category_id,
             score: attributes["score"],
-            answer: ""
+            answer: "",
+            numbered: numbered_categories
           },
           response: %{
             outputSpeech: %{
@@ -262,7 +266,8 @@ defmodule JeopardyWeb.GameController do
             categories: categories,
             answer: question.answer,
             qValue: value,
-            score: score
+            score: score,
+            numbered: numbered_categories
           },
           response: %{
             outputSpeech: %{
@@ -290,22 +295,19 @@ defmodule JeopardyWeb.GameController do
         value = intent["slots"]["answer"]["value"]
         score = attributes["score"]
         qValue = attributes["qValue"]
-
-        categories_list =
-          Enum.join(
-            Enum.map([1, 2, 3, 4, 5], fn n -> Kernel.inspect(n) <> ". " <> Enum.at(categories, n - 1) end),", ")
+        IO.puts("categories #{Kernel.inspect(numbered_categories)}")        
 
         if value == attributes["answer"] do
           new_score = Kernel.inspect(score + qValue)
-          response_for_answer(conn, new_score, clue_list, categories, categories_list, "correct")
+          response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1)
         else
           response_for_answer(
             conn,
             Kernel.inspect(score),
             clue_list,
             categories,
-            categories_list,
-            "wrong"
+            numbered_categories,
+            0
           )
         end
 
@@ -319,7 +321,11 @@ defmodule JeopardyWeb.GameController do
     app_id == "abcdef"
   end
 
-  def response_for_answer(conn, new_score, clue_list, categories, categories_list, result) do
+  def response_for_answer(conn, new_score, clue_list, categories, categories_list, s) do
+    result = "correct"
+    if s == 0 do
+      result = "wrong"
+    end
     conn
     |> put_status(:ok)
     |> json(%{
@@ -329,14 +335,14 @@ defmodule JeopardyWeb.GameController do
         categories: categories,
         answer: "",
         qValue: 0,
-        score: new_score
+        score: new_score,
+        numbered: categories_list
       },
       response: %{
         outputSpeech: %{
           type: "PlainText",
           text:
-            "You are " <>
-              result <> ". Your score is " <> new_score <> ". Categories list " <> categories_list
+            "You are " <> result <> ". Your score is " <> new_score <> ". Categories list " <> categories_list <> ".Please pick a category"
         },
         card: %{
           type: "Simple",
