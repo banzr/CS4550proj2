@@ -14,8 +14,7 @@ defmodule JeopardyWeb.GameController do
   end
 
   def alexa(conn, request) do
-    [a | _ ] = Map.keys(request)    
-    data = JSON.decode!(a)
+    data = request
     IO.puts("#{Kernel.inspect(data)}")
     answer = data
     session = answer["session"]
@@ -186,6 +185,7 @@ defmodule JeopardyWeb.GameController do
   end
 
   def parse_answer(conn, data) do
+    IO.puts("Parsing answer #{Kernel.inspect(data)}")
     answer = data
     session = answer["session"]
     user = session["user"]
@@ -309,7 +309,7 @@ defmodule JeopardyWeb.GameController do
           )
         end
 
-      true ->
+      _ ->
         conn
         |> put_status(:error)
     end
