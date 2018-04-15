@@ -246,8 +246,8 @@ defmodule JeopardyWeb.GameController do
           }
         })
 
-      "chooseQuestion" ->
-        value = String.to_integer(intent["slots"]["question_no"]["value"])
+      "chooseValue" ->
+        value = String.to_integer(intent["slots"]["value"]["value"])
         category_id = String.to_integer(attributes["category_id"])
         questions = Games.get_clue_by_category_id(category_id)
         [question | _] = Enum.filter(questions, fn q -> q.value == value end)
@@ -285,7 +285,7 @@ defmodule JeopardyWeb.GameController do
           }
         })
 
-      "chooseAnswer" ->
+      "answerResponse" ->
         value = String.to_integer(intent["slots"]["answer"]["value"])
         score = attributes["score"]
         qValue = attributes["qValue"]
