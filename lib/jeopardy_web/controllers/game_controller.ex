@@ -295,7 +295,7 @@ defmodule JeopardyWeb.GameController do
         value = intent["slots"]["answer"]["value"]
         score = attributes["score"]
         qValue = attributes["qValue"]
-        IO.puts("categories #{Kernel.inspect(numbered_categories)}")        
+        IO.puts("categories #{Kernel.inspect(value)}")        
 
         if value == attributes["answer"] do
           new_score = Kernel.inspect(score + qValue)
@@ -342,7 +342,7 @@ defmodule JeopardyWeb.GameController do
         outputSpeech: %{
           type: "PlainText",
           text:
-            "You are " <> result <> ". Your score is " <> new_score <> ". Categories list " <> categories_list <> ".Please pick a category"
+            "You are " <> result <> ". Your current score is " <> new_score <> ". Categories list " <> categories_list <> ".Please pick a category"
         },
         card: %{
           type: "Simple",
