@@ -14,12 +14,16 @@ defmodule JeopardyWeb.GameController do
   end
 
   def alexa(conn, request) do
-    data = request
+    [a | _ ] = Map.keys(request)    
+    data = JSON.decode!(a)
+    IO.puts("#{Kernel.inspect(data)}")
     answer = data
     session = answer["session"]
     context = answer["context"]
     request = answer["request"]
     type = request["type"]
+    intent = request["intent"]
+    IO.puts("#{Kernel.inspect(intent)}")
     #    userId = session["user"]["userId"]
     #    accessToken = session["user"]["accessToken"]
     #    attributes = session["attributes"]
@@ -182,7 +186,7 @@ defmodule JeopardyWeb.GameController do
   end
 
   def parse_answer(conn, data) do
-    answer = Poison.decode!(data)
+    answer = data
     session = answer["session"]
     user = session["user"]
     attributes = session["attributes"]
