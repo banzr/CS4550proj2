@@ -18,7 +18,7 @@ defmodule JeopardyWeb.GameController do
     answer = data
     session = answer["session"]
     context = answer["context"]
-    request = context["request"]
+    request = answer["request"]
     type = request["type"]
     #    userId = session["user"]["userId"]
     #    accessToken = session["user"]["accessToken"]
@@ -28,7 +28,7 @@ defmodule JeopardyWeb.GameController do
     #    clue_list = attributes["questions"]
     #    user_input = answer["context"]
     # if new session, get user and new game
-    if (session == nil || session["new"] == true || type == "LaunchRequest" || (type == "IntentRequest" && request["itent"]["name"] == "newGame") do
+    if (type == "LaunchRequest" || (type == "IntentRequest" && request["itent"]["name"] == "newGame")) do
       create(conn, data)
     else
       parse_answer(conn, data)
@@ -191,7 +191,7 @@ defmodule JeopardyWeb.GameController do
     game_id = attributes["game_id"]
     clue_list = attributes["clues"]
     context = answer["context"]
-    request = context["request"]
+    request = answer["request"]
     intent = request["intent"]
     name = intent["name"]
 
