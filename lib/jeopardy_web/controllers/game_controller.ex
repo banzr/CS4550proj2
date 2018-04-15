@@ -303,7 +303,7 @@ defmodule JeopardyWeb.GameController do
           if (len == 5) do
             response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The game has ended. Your final score is " <> new_score <> ". Would you like to play another game?")
           else
-            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". Your current score is " <> new_score <> " You have " <> Kernel.inspect(10 - len) <> " questions left. Category list " <> numbered_categories <> ". Please choose a category")
+            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The correct answer is " <> attributes["answer"] <> " .Your current score is " <> new_score <> " You have " <> Kernel.inspect(10 - len) <> " questions left. Category list " <> numbered_categories <> ". Please choose a category")
           end
         else
           if (len == 5) do
@@ -316,7 +316,7 @@ defmodule JeopardyWeb.GameController do
             categories,
             numbered_categories,
             0,
-            ". Your current score is " <> Kernel.inspect(score) <> " You have " <> Kernel.inspect(10 - len)  <> " questions left. Category list " <> numbered_categories <> ". Please choose a category"
+            ". The correct answer is " <> attributes["answer"] <> ". Your current score is " <> Kernel.inspect(score) <> " You have " <> Kernel.inspect(10 - len)  <> " questions left. Category list " <> numbered_categories <> ". Please choose a category"
           )
           end
         end
