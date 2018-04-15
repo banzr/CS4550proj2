@@ -55,7 +55,7 @@ defmodule JeopardyWeb.GameController do
       numbered_categories_list =
         Enum.join(
           Enum.map([1, 2, 3, 4, 5], fn n ->
-            Kernel.inspect(n) <> " " <> Enum.at(categories_list, n - 1)
+            Kernel.inspect(n) <> ". " <> Enum.at(categories_list, n - 1)
           end),
           ", "
         )
@@ -248,7 +248,7 @@ defmodule JeopardyWeb.GameController do
 
       "chooseValue" ->
         value = String.to_integer(intent["slots"]["value"]["value"])
-        category_id = String.to_integer(attributes["category_id"])
+        category_id = attributes["category_id"]
         questions = Games.get_clue_by_category_id(category_id)
         [question | _] = Enum.filter(questions, fn q -> q.value == value end)
         # TODO, make sur equestion is not asked before      
@@ -266,14 +266,13 @@ defmodule JeopardyWeb.GameController do
             outputSpeech: %{
               type: "PlainText",
               text:
-                "The question you chose is " <> question.question <> ". Please provide an answer"
+                "The question you chose with value " <> Kernel.inspect(value) <> " is " <> question.question <> ". Please provide an answer"
             },
             card: %{
               type: "Simple",
               title: "Jeopary",
               content:
-                "The questin you chose with value " <>
-                  question.value(" is " <> question.question <> " Please provide an answer")
+                "The question you chose is " <> question.question <> " Please provide an answer"
             },
             reprompt: %{
               outputSpeech: %{
