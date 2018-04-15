@@ -285,7 +285,7 @@ defmodule JeopardyWeb.GameController do
         })
 
       "answerResponse" ->
-        value = String.to_integer(intent["slots"]["answer"]["value"])
+        value = intent["slots"]["answer"]["value"]
         score = attributes["score"]
         qValue = attributes["qValue"]
 
