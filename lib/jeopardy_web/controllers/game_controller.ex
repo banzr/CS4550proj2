@@ -60,7 +60,9 @@ defmodule JeopardyWeb.GameController do
         version: "1.0",
         sessionAttributes: %{
           clues: [],
-          categories: categories_id
+          categories: categories_id,
+          answer: "",
+          score: 0          
         },
         response: %{
           outputSpeech: %{
@@ -207,7 +209,9 @@ defmodule JeopardyWeb.GameController do
         sessionAttributes: %{
           clues: clue_list,
           categories: categories,
-          category_id: category_id
+          category_id: category_id,
+          score: attributes["score"],
+          answer: ""
         },
         response: %{
           outputSpeech: %{
@@ -245,7 +249,8 @@ defmodule JeopardyWeb.GameController do
         sessionAttributes: %{
           clues: [question.id] ++ clue_list,
           categories: categories,
-          answer: question.answer
+          answer: question.answer,
+          qValue: value
         },
         response: %{
           outputSpeech: %{
