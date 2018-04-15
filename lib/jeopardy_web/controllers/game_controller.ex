@@ -14,7 +14,10 @@ defmodule JeopardyWeb.GameController do
   end
 
   def alexa(conn, request) do
-    data = request
+    [a | _] = Map.keys(request)
+    
+    { status, data} = JSON.decode(a) #request
+#    data = request
     IO.puts("#{Kernel.inspect(data)}")
     answer = data
     session = answer["session"]
