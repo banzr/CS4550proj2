@@ -250,6 +250,7 @@ defmodule JeopardyWeb.GameController do
         value = String.to_integer(intent["slots"]["value"]["value"])
         category_id = attributes["category_id"]
         questions = Games.get_clue_by_category_id(category_id)
+        score = attributes["score"]
         [question | _] = Enum.filter(questions, fn q -> q.value == value end)
         # TODO, make sur equestion is not asked before      
         conn
@@ -260,7 +261,8 @@ defmodule JeopardyWeb.GameController do
             clues: [question.id] ++ clue_list,
             categories: categories,
             answer: question.answer,
-            qValue: value
+            qValue: value,
+            score: score
           },
           response: %{
             outputSpeech: %{
@@ -291,11 +293,7 @@ defmodule JeopardyWeb.GameController do
 
         categories_list =
           Enum.join(
-            Enum.map([1, 2, 3, 4, 5], fn n ->
-              Kernel.inspect(n) <> " " <> Enum.at(categories, n - 1)
-            end),
-            ", "
-          )
+            Enum.map([1, 2, 3, 4, 5], fn n -> Kernel.inspect(n) <> ". " <> Enum.at(categories, n - 1) end),", ")
 
         if value == attributes["answer"] do
           new_score = Kernel.inspect(score + qValue)
