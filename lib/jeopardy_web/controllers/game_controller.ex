@@ -14,9 +14,9 @@ defmodule JeopardyWeb.GameController do
   end
 
   def alexa(conn, request) do
-#    [a | _] = Map.keys(request)
-    
-#    { status, data} = JSON.decode(a) #request
+    #    [a | _] = Map.keys(request)
+
+    #    { status, data} = JSON.decode(a) #request
     data = request
     IO.puts("#{Kernel.inspect(data)}")
     answer = data
@@ -34,7 +34,8 @@ defmodule JeopardyWeb.GameController do
     #    clue_list = attributes["questions"]
     #    user_input = answer["context"]
     # if new session, get user and new game
-    if (type == "LaunchRequest" || (type == "IntentRequest" && request["intent"]["name"] == "newGame")) do
+    if type == "LaunchRequest" ||
+         (type == "IntentRequest" && request["intent"]["name"] == "newGame") do
       create(conn, data)
     else
       parse_answer(conn, data)
@@ -206,6 +207,10 @@ defmodule JeopardyWeb.GameController do
     name = intent["name"]
 
     case name do
+      "restartGame" ->
+        create(conn, data)
+
+
       "chooseCategory" ->
         value = String.to_integer(intent["slots"]["category_no"]["value"])
         category_id = Enum.at(categories, value - 1)
@@ -298,27 +303,69 @@ defmodule JeopardyWeb.GameController do
         qValue = attributes["qValue"]
         len = Kernel.length(answered_clues)
 
-        IO.puts("categories #{Kernel.inspect(value)}")       
-        if (correctA =~ value || correctA =~ "the " <> value || correctA =~ "a " <> value) do
+        IO.puts("categories #{Kernel.inspect(value)}")
+
+        if correctA =~ value || correctA =~ "the " <> value || correctA =~ "a " <> value do
           new_score = Kernel.inspect(score + qValue)
-          if (len == 5) do
-            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The game has ended. Your final score is " <> new_score <> ". Would you like to play another game?")
-          else
-            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The correct answer is " <> attributes["answer"] <> " .Your current score is " <> new_score <> ". You have " <> Kernel.inspect(5 - len) <> " questions left. Category list: " <> numbered_categories <> ". Please choose a category")
-          end
-        else
-          if (len == 5) do
-            response_for_answer(conn, Kernel.inspect(score), clue_list, categories, numbered_categories, 0, ". The game has ended. Your final score is " <> Kernel.inspect(score) <> ". Would you like to play another game?")
+
+          if len == 5 do
+            response_for_answer(
+              conn,
+              new_score,
+              clue_list,
+              categories,
+              numbered_categories,
+              1,
+              ". The game has ended. Your final score is " <>
+                new_score <> ". Would you like to play another game?"
+            )
           else
             response_for_answer(
-            conn,
-            Kernel.inspect(score),
-            clue_list,
-            categories,
-            numbered_categories,
-            0,
-            ". The correct answer is " <> attributes["answer"] <> ". Your current score is " <> Kernel.inspect(score) <> ". You have " <> Kernel.inspect(5 - len)  <> " questions left. Category list: " <> numbered_categories <> ". Please choose a category"
-          )
+              conn,
+              new_score,
+              clue_list,
+              categories,
+              numbered_categories,
+              1,
+              ". The correct answer is " <>
+                attributes["answer"] <>
+                " .Your current score is " <>
+                new_score <>
+                ". You have " <>
+                Kernel.inspect(5 - len) <>
+                " questions left. Category list: " <>
+                numbered_categories <> ". Please choose a category"
+            )
+          end
+        else
+          if len == 5 do
+            response_for_answer(
+              conn,
+              Kernel.inspect(score),
+              clue_list,
+              categories,
+              numbered_categories,
+              0,
+              ". The game has ended. Your final score is " <>
+                Kernel.inspect(score) <> ". Would you like to play another game?"
+            )
+          else
+            response_for_answer(
+              conn,
+              Kernel.inspect(score),
+              clue_list,
+              categories,
+              numbered_categories,
+              0,
+              ". The correct answer is " <>
+                attributes["answer"] <>
+                ". Your current score is " <>
+                Kernel.inspect(score) <>
+                ". You have " <>
+                Kernel.inspect(5 - len) <>
+                " questions left. Category list: " <>
+                numbered_categories <> ". Please choose a category"
+            )
           end
         end
 
@@ -334,9 +381,11 @@ defmodule JeopardyWeb.GameController do
 
   def response_for_answer(conn, new_score, clue_list, categories, categories_list, s, response) do
     result = "correct"
+
     if s == 0 do
       result = "wrong"
     end
+
     conn
     |> put_status(:ok)
     |> json(%{
@@ -352,8 +401,7 @@ defmodule JeopardyWeb.GameController do
       response: %{
         outputSpeech: %{
           type: "PlainText",
-          text:
-            "You are " <> result <> response
+          text: "You are " <> result <> response
         },
         card: %{
           type: "Simple",
