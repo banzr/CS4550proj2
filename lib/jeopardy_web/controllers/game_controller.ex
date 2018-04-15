@@ -75,14 +75,14 @@ defmodule JeopardyWeb.GameController do
           outputSpeech: %{
             type: "PlainText",
             text:
-              "New game with following categories " <>
-                numbered_categories_list <> ". Please pick a number?"
+              "New game with following categories: " <>
+                numbered_categories_list <> ". Please pick a number"
           },
           card: %{
             type: "Simple",
             title: "Jeopary",
             content:
-              "New game created with following categories " <>
+              "New game created with following categories: " <>
                 numbered_categories_list <> ". Please pick one number!"
           },
           reprompt: %{
@@ -292,18 +292,19 @@ defmodule JeopardyWeb.GameController do
         })
 
       "answerResponse" ->
-        value = intent["slots"]["answer"]["value"]
+        value = String.downcase(intent["slots"]["answer"]["value"])
+        correctA = String.downcase(attributes["answer"])
         score = attributes["score"]
         qValue = attributes["qValue"]
         len = Kernel.length(answered_clues)
 
-        IO.puts("categories #{Kernel.inspect(value)}")        
-        if (value == attributes["answer"] || "The " <> value == attributes["answer"] || "the " <> value == attributes["answer"]) do
+        IO.puts("categories #{Kernel.inspect(value)}")       
+        if (correctA =~ value || correctA =~ "the " <> value || correctA =~ "a " <> value) do
           new_score = Kernel.inspect(score + qValue)
           if (len == 5) do
             response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The game has ended. Your final score is " <> new_score <> ". Would you like to play another game?")
           else
-            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The correct answer is " <> attributes["answer"] <> " .Your current score is " <> new_score <> " You have " <> Kernel.inspect(10 - len) <> " questions left. Category list " <> numbered_categories <> ". Please choose a category")
+            response_for_answer(conn, new_score, clue_list, categories, numbered_categories, 1, ". The correct answer is " <> attributes["answer"] <> " .Your current score is " <> new_score <> ". You have " <> Kernel.inspect(5 - len) <> " questions left. Category list: " <> numbered_categories <> ". Please choose a category")
           end
         else
           if (len == 5) do
@@ -316,7 +317,7 @@ defmodule JeopardyWeb.GameController do
             categories,
             numbered_categories,
             0,
-            ". The correct answer is " <> attributes["answer"] <> ". Your current score is " <> Kernel.inspect(score) <> " You have " <> Kernel.inspect(10 - len)  <> " questions left. Category list " <> numbered_categories <> ". Please choose a category"
+            ". The correct answer is " <> attributes["answer"] <> ". Your current score is " <> Kernel.inspect(score) <> ". You have " <> Kernel.inspect(5 - len)  <> " questions left. Category list: " <> numbered_categories <> ". Please choose a category"
           )
           end
         end
@@ -345,7 +346,7 @@ defmodule JeopardyWeb.GameController do
         categories: categories,
         answer: "",
         qValue: 0,
-        score: new_score,
+        score: String.to_integer(new_score),
         numbered: categories_list
       },
       response: %{
