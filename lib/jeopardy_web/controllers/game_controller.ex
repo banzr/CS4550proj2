@@ -28,7 +28,7 @@ defmodule JeopardyWeb.GameController do
     #    clue_list = attributes["questions"]
     #    user_input = answer["context"]
     # if new session, get user and new game
-    if (type == "LaunchRequest" || (type == "IntentRequest" && request["itent"]["name"] == "newGame")) do
+    if (type == "LaunchRequest" || (type == "IntentRequest" && request["intent"]["name"] == "newGame")) do
       create(conn, data)
     else
       parse_answer(conn, data)
