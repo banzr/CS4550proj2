@@ -116,4 +116,8 @@ defmodule Jeopardy.Sessions do
       get_or_create_session(nil)
     end
   end
+
+  def get_session_by_user_id(id) do
+    Repo.all(from s in Session, where: s.user_id == ^id)
+  end
 end

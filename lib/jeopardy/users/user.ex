@@ -4,8 +4,9 @@ defmodule Jeopardy.Users.User do
 
 
   schema "users" do
-    field :amazon_uid, :integer
+    field :amazon_uid, :string
     field :name, :string
+    has_many :sessions, Jeopardy.Sessions.Session, foreign_key: :session_id
 
     timestamps()
   end
@@ -14,6 +15,6 @@ defmodule Jeopardy.Users.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:amazon_uid, :name])
-    |> validate_required([:amazon_uid, :name])
+    |> validate_required([:amazon_uid])
   end
 end

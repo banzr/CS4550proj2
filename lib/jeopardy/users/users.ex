@@ -50,9 +50,10 @@ defmodule Jeopardy.Users do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
+    {:ok, user } =%User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+    user
   end
 
   @doc """
@@ -104,5 +105,14 @@ defmodule Jeopardy.Users do
 
   def get_user_by_name(name) do
     Repo.get_by(User, name: name)
+  end
+
+  def get_or_create_user(amazonId) do
+    user = Repo.get_by(User, amazon_uid: amazonId)
+    if user do
+      user
+    else
+      create_user(%{amazon_uid: amazonId})
+    end
   end
 end

@@ -5,6 +5,7 @@ defmodule Jeopardy.Games.Category do
     
   schema "categories" do
     field :title, :string
+    belongs_to :game, Jeopardy.Games.Game
     has_many :clues, Jeopardy.Games.Clue, foreign_key: :clue_id
 
     timestamps()
@@ -13,7 +14,7 @@ defmodule Jeopardy.Games.Category do
   @doc false
   def changeset(category, attrs) do
     category
-    |> cast(attrs, [:title])
+    |> cast(attrs, [:title, :game_id])
     |> validate_required([:title])
   end
 end
