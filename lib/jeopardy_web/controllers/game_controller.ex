@@ -135,7 +135,7 @@ defmodule JeopardyWeb.GameController do
           end
 
           clue_params = %{
-            answer: clue_req["answer"],
+            answer: remove_tag(clue_req["answer"]),
             question: clue_req["question"],
             value: clue_req["value"],
             category_id: category.id
