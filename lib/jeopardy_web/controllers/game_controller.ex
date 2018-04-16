@@ -129,6 +129,11 @@ defmodule JeopardyWeb.GameController do
             Enum.filter(cat["clues"], fn clue -> clue["value"] == val * (n + 1) end)
 
           #          IO.puts("CLUE REQ #{Kernel.inspect(clue_req)}")
+          if (String.contains?(clue_req["answer"],"<")) do
+            IO.puts("CLUE #{clue_req["answer"]}")
+            IO.puts("CLUE ANSWSER #{remove_tag(clue_req["answer"])}")
+          end
+
           clue_params = %{
             answer: clue_req["answer"],
             question: clue_req["question"],
@@ -166,6 +171,14 @@ defmodule JeopardyWeb.GameController do
     else
       nil
     end
+  end
+
+  def remove_tag(word) do    
+    if String.contains?(word, ">") do
+      Enum.at(String.split(Enum.at(String.split(word, ">", parts: 2),1), "<", parts: 2), 0)
+    else
+      word
+    end  
   end
 
   def show(conn, %{"id" => id}) do
