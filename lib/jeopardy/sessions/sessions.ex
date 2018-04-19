@@ -13,12 +13,15 @@ defmodule Jeopardy.Sessions do
 
   ## Examples
 
-      iex> list_sessions()
-      [%Session{}, ...]
+  iex> list_sessions()
+  [%Session{}, ...]
 
   """
   def list_sessions do
     Repo.all(Session)
+    |>Repo.preload(:user)
+    |>Repo.preload(:game)
+
   end
 
   @doc """
@@ -28,11 +31,11 @@ defmodule Jeopardy.Sessions do
 
   ## Examples
 
-      iex> get_session!(123)
-      %Session{}
+  iex> get_session!(123)
+  %Session{}
 
-      iex> get_session!(456)
-      ** (Ecto.NoResultsError)
+  iex> get_session!(456)
+  ** (Ecto.NoResultsError)
 
   """
   def get_session!(id), do:
@@ -45,11 +48,11 @@ defmodule Jeopardy.Sessions do
 
   ## Examples
 
-      iex> create_session(%{field: value})
-      {:ok, %Session{}}
+  iex> create_session(%{field: value})
+  {:ok, %Session{}}
 
-      iex> create_session(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> create_session(%{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def create_session(attrs \\ %{}) do
@@ -63,11 +66,11 @@ defmodule Jeopardy.Sessions do
 
   ## Examples
 
-      iex> update_session(session, %{field: new_value})
-      {:ok, %Session{}}
+  iex> update_session(session, %{field: new_value})
+  {:ok, %Session{}}
 
-      iex> update_session(session, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> update_session(session, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def update_session(%Session{} = session, attrs) do
@@ -81,11 +84,11 @@ defmodule Jeopardy.Sessions do
 
   ## Examples
 
-      iex> delete_session(session)
-      {:ok, %Session{}}
+  iex> delete_session(session)
+  {:ok, %Session{}}
 
-      iex> delete_session(session)
-      {:error, %Ecto.Changeset{}}
+  iex> delete_session(session)
+  {:error, %Ecto.Changeset{}}
 
   """
   def delete_session(%Session{} = session) do
@@ -97,8 +100,8 @@ defmodule Jeopardy.Sessions do
 
   ## Examples
 
-      iex> change_session(session)
-      %Ecto.Changeset{source: %Session{}}
+  iex> change_session(session)
+  %Ecto.Changeset{source: %Session{}}
 
   """
   def change_session(%Session{} = session) do
