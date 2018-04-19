@@ -2,7 +2,7 @@ defmodule JeopardyWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", JeopardyWeb.RoomChannel
+   channel "game:*", JeopardyWeb.GameChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

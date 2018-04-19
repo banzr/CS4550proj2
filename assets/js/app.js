@@ -17,5 +17,18 @@ import "phoenix_html"
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
+import {Socket} from "phoenix"
 
-// import socket from "./socket"
+
+import render from "./src/index";
+
+
+$(function() {
+  var root = document.getElementById('root');
+  let socket = new Socket("/socket", {params: {token: window.userToken}})
+  socket.connect()
+  let channel = socket.channel("game:lobby",window.gameName,{})
+  if (!root) return;
+
+  render(root,channel);
+});
