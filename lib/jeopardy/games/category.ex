@@ -5,6 +5,7 @@ defmodule Jeopardy.Games.Category do
     
   schema "categories" do
     field :title, :string
+    has_many :clues, Jeopardy.Games.Clue, foreign_key: :clue_id
 
     timestamps()
   end

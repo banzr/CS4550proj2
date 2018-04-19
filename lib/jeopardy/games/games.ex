@@ -229,6 +229,15 @@ defmodule Jeopardy.Games do
   """
   def get_clue!(id), do: Repo.get!(Clue, id)
 
+  def get_clue_by_category_id(id) do
+    IO.puts("#{id}") 
+    a = Repo.all(from c in Clue, where: c.category_id == ^id)
+    IO.puts("ALL CAT #{Kernel.inspect(a)}")
+#    cats = Enum.filter(a, fn c -> Kernel.inspect(c.category_id) == Kernel.inspect(id) end)
+#    IO.puts("CAT HERE #{Kernel.inspect(cats)}")
+    a
+  end
+
   @doc """
   Creates a clue.
 
