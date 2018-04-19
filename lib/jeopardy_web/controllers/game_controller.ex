@@ -4,7 +4,7 @@ defmodule JeopardyWeb.GameController do
   alias Jeopardy.Games
   alias Jeopardy.Games.Game
   alias Jeopardy.Games.Category
-  alias Jeopary.Games.Clue
+  alias Jeopardy.Games.Clue
   alias Jeopardy.Users
   alias Jeopardy.Sessions
   alias Jeopardy.Sessions.Session
@@ -87,7 +87,7 @@ defmodule JeopardyWeb.GameController do
             },
             card: %{
               type: "Simple",
-              title: "Jeopary",
+              title: "Jeopardy",
               content:
                 "New game created with following categories: " <>
                   numbered_categories_list <> ". Please pick one number!"
@@ -224,13 +224,15 @@ defmodule JeopardyWeb.GameController do
     request = answer["request"]
     intent = request["intent"]
     name = intent["name"]
-    sessionId = attributes["session_id"]  
+    sessionId = attributes["session_id"]
   
     case name do
       "restartGame" ->
         create(conn, data, user)
 
       "chooseCategory" ->
+
+      IO.puts
         value = String.to_integer(intent["slots"]["category_no"]["value"])
         category_id = Enum.at(categories, value - 1)
         questions = Games.get_clue_by_category_id(category_id)
@@ -268,7 +270,7 @@ defmodule JeopardyWeb.GameController do
             },
             card: %{
               type: "Simple",
-              title: "Jeopary",
+              title: "Jeopardy",
               content:
                 "Current category has questions with following valules " <>
                   value_questions <> " Please choose a question by its value"
@@ -289,7 +291,7 @@ defmodule JeopardyWeb.GameController do
         questions = Games.get_clue_by_category_id(category_id)
         score = attributes["score"]
         [question | _] = Enum.filter(questions, fn q -> q.value == value end)
-        # TODO, make sur equestion is not asked before
+        # TODO, make sure question has not been asked before
         conn
         |> put_status(:ok)
         |> json(%{
@@ -313,7 +315,7 @@ defmodule JeopardyWeb.GameController do
             },
             card: %{
               type: "Simple",
-              title: "Jeopary",
+              title: "Jeopardy",
               content:
                 "The question you chose is " <> question.question <> " Please provide an answer"
             },
@@ -450,7 +452,7 @@ defmodule JeopardyWeb.GameController do
         },
         card: %{
           type: "Simple",
-          title: "Jeopary",
+          title: "Jeopardy",
           content: "You are " <> result <> response
         },
         reprompt: %{
