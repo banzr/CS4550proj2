@@ -5,11 +5,11 @@ import { Provider } from "react-redux";
 import { render } from "react-dom";
 import { ConnectedRouter as Router } from 'connected-react-router'
 
-export default function(root) {
+export default function(root,channel) {
   render(
     <Provider store={store}>
       <Router history={history}>
-        <App />
+        <App channel={channel}/>
       </Router>
     </Provider>,
     root

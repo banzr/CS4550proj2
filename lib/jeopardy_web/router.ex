@@ -28,7 +28,7 @@ defmodule JeopardyWeb.Router do
   # Other scopes may use custom stacks.
   scope "/api/v1", JeopardyWeb do
     pipe_through(:api)
-    resources("/users", UserController, except: [:new, :edit])
+    resources("/users", UserController)
     resources("/games", GameController)
     resources("/sessions", SessionController, except: [:new, :edit])
     resources("/categories", CategoryController)

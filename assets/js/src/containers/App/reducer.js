@@ -1,15 +1,11 @@
 import { createReducer } from "../../utils/redux";
-import { INCREMENT, DECREMENT } from "./actions";
+import { INCREMENT, DECREMENT, UPDATE } from "./actions";
 
 // placeholder state and actions for example purposes, to be filled in later
 const initialState = {
   placeholder: 0,
   // TODO: replace sample data with real data, loadead & kept synced via websockets
   sessions: [
-    { game: { id: 0 }, player: { id: 0 }, score: 100 },
-    { game: { id: 0 }, player: { id: 1 }, score: 200 },
-    { game: { id: 1 }, player: { id: 1 }, score: 300 },
-    { game: { id: 2 }, player: { id: 2 }, score: 400 }
   ]
 };
 
@@ -26,5 +22,10 @@ export default createReducer(initialState, {
     const current = state.placeholder;
     // don't mutate state, return new state
     return { ...state, placeholder: current - decrease };
-  }
-});
+  },
+[UPDATE]: (state, { payload }) => {
+    console.log("update action fired with ", payload);
+      const current = state.placeholder;
+    return { ...state, sessions : payload  };
+
+}});
