@@ -9,7 +9,8 @@ const initialState = {
 export default createReducer(initialState, {
   [LOGIN]: state => {
     console.log("login action fired");
-    alert("login action fired");
+    const options = { scope: "profile" };
+    amazon.Login.authorize(options, "https://jeopardy.superkewl.xyz");
     return state;
   }
 });

@@ -1,5 +1,6 @@
 import React from "react";
 import Placeholder from "../../components/Placeholder";
+import AmazonButton from "../../components/AmazonButton";
 import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -7,14 +8,18 @@ import { login } from "./actions";
 import { selectToken } from "./selectors";
 
 class Login extends React.Component {
+  setNodeRef(provider, node) {
+    if (node) {
+      this.nodes[provider] = node;
+    }
+  }
+
   render() {
     const { props: { handleLogin, token } } = this;
-
     return (
       <div>
         <Placeholder name="login" />
-        <p>Token: {token}</p>
-        <Button onClick={handleLogin}>login</Button>
+        <AmazonButton onClick={handleLogin}/>
       </div>
     );
   }

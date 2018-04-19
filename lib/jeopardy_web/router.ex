@@ -7,7 +7,6 @@ defmodule JeopardyWeb.Router do
     plug(:fetch_session)
     plug(:fetch_flash)
     plug(:put_secure_browser_headers)
-    plug(:fetch_game_session)
     plug(:fetch_user)
   end
 

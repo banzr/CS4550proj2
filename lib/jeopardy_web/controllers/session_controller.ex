@@ -4,8 +4,8 @@ defmodule JeopardyWeb.SessionController do
   alias Jeopardy.Sessions
   alias Jeopardy.Sessions.Session
   alias Jeopardy.Users
-  
-  action_fallback JeopardyWeb.FallbackController
+
+  action_fallback(JeopardyWeb.FallbackController)
 
   def index(conn, _params) do
     sessions = Sessions.list_sessions()
@@ -36,6 +36,7 @@ defmodule JeopardyWeb.SessionController do
 
   def delete(conn, %{"id" => id}) do
     session = Sessions.get_session!(id)
+
     with {:ok, %Session{}} <- Sessions.delete_session(session) do
       send_resp(conn, :no_content, "")
     end
