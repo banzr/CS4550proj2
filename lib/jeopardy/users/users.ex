@@ -110,6 +110,7 @@ defmodule Jeopardy.Users do
   def get_or_create_user(amazonId) do
     user = Repo.get_by(User, amazon_uid: amazonId)
     if user do
+      IO.puts("#{Kernel.inspect(user)}")
       user
     else
       create_user(%{amazon_uid: amazonId})

@@ -134,7 +134,7 @@ defmodule Jeopardy.Games do
   def get_category!(id), do: Repo.get!(Category, id)
 
   def get_category_by_game_id(id) do
-    Repo.all(from g in Game, where: g.game_id == ^id)
+    Repo.all(from c in Category, where: c.game_id == ^id)
   end
 
   @doc """
