@@ -73,6 +73,7 @@ defmodule JeopardyWeb.GameController do
           sessionAttributes: %{
             clues: [],
             categories: categories_id,
+            chosenCat: -1,
             answer: "",
             score: 0,
             numbered: numbered_categories_list,
@@ -231,11 +232,10 @@ defmodule JeopardyWeb.GameController do
         create(conn, data, user)
 
       "chooseNumber" ->
-        IO.puts
 
         value = String.to_integer(intent["slots"]["number"]["value"])
-
-        if value == -1 do
+	IO.puts("VAL #{Kernel.inspect(value)}")
+        if (value < 200) do
 
         category_id = Enum.at(categories, value - 1)
         questions = Games.get_clue_by_category_id(category_id)
@@ -258,7 +258,7 @@ defmodule JeopardyWeb.GameController do
           sessionAttributes: %{
             clues: clue_list,
             categories: categories,
-            category_id: category_id,
+            chosenCat: category_id,
             score: attributes["score"],
             answer: "",
             qValue: -1,
@@ -291,9 +291,9 @@ defmodule JeopardyWeb.GameController do
 
         else
 
-          category_id = attributes["category_id"]
-          questions = Games.get_clue_by_category_id(category_id)
-
+        category_id = attributes["chosenCat"]
+        IO.puts("QIESSSSSSSS #{Kernel.inspect(category_id)}")
+        questions = Games.get_clue_by_category_id(category_id)
         score = attributes["score"]
         [question | _] = Enum.filter(questions, fn q -> q.value == value end)
         # TODO, make sure question has not been asked before
@@ -304,7 +304,7 @@ defmodule JeopardyWeb.GameController do
           sessionAttributes: %{
             clues: [question.id] ++ clue_list,
             categories: categories,
-            category: category_id,
+            chosenCat: category_id,
             answer: question.answer,
             qValue: value,
             score: score,
