@@ -230,10 +230,13 @@ defmodule JeopardyWeb.GameController do
       "restartGame" ->
         create(conn, data, user)
 
-      "chooseCategory" ->
+      "chooseNumber" ->
+        IO.puts
 
-      IO.puts
-        value = String.to_integer(intent["slots"]["category_no"]["value"])
+        value = String.to_integer(intent["slots"]["number"]["value"])
+
+        if value == -1 do
+
         category_id = Enum.at(categories, value - 1)
         questions = Games.get_clue_by_category_id(category_id)
         
@@ -258,6 +261,7 @@ defmodule JeopardyWeb.GameController do
             category_id: category_id,
             score: attributes["score"],
             answer: "",
+            qValue: -1,
             numbered: numbered_categories,
             session_id: sessionId
           },
@@ -272,23 +276,24 @@ defmodule JeopardyWeb.GameController do
               type: "Simple",
               title: "Jeopardy",
               content:
-                "Current category has questions with following valules " <>
+                "Current category has questions with following values..." <>
                   value_questions <> " Please choose a question by its value"
             },
             reprompt: %{
               outputSpeech: %{
                 type: "PlainText",
-                text: "Can I help you with anything else?"
+                text: "Please say the number that corresponds to the desired value"
               }
             },
             shouldEndSession: false
           }
         })
 
-      "chooseValue" ->
-        value = String.to_integer(intent["slots"]["value"]["value"])
-        category_id = attributes["category_id"]
-        questions = Games.get_clue_by_category_id(category_id)
+        else
+
+          category_id = attributes["category_id"]
+          questions = Games.get_clue_by_category_id(category_id)
+
         score = attributes["score"]
         [question | _] = Enum.filter(questions, fn q -> q.value == value end)
         # TODO, make sure question has not been asked before
@@ -299,6 +304,7 @@ defmodule JeopardyWeb.GameController do
           sessionAttributes: %{
             clues: [question.id] ++ clue_list,
             categories: categories,
+            category: category_id,
             answer: question.answer,
             qValue: value,
             score: score,
@@ -322,12 +328,13 @@ defmodule JeopardyWeb.GameController do
             reprompt: %{
               outputSpeech: %{
                 type: "PlainText",
-                text: "Can I help you with anything else?"
+                text: "Please say what or who is followed by the answer"
               }
             },
             shouldEndSession: false
           }
         })
+        end
 
       "answerResponse" ->
         value = String.downcase(intent["slots"]["answer"]["value"])
