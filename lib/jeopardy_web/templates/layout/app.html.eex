@@ -12,11 +12,13 @@
   </head>
 
   <body class="bg">
-<%#     <div id="amazon-root"></div>
+     <div id="amazon-root"></div>
     <script type="text/javascript">
       // Amazon login stuff
       window.onAmazonLoginReady = function() {
-        amazon.Login.setClientId('YOUR-CLIENT-ID');
+
+        console.log("Amazon SDK is loaded");
+        amazon.Login.setClientId('amzn1.application-oa2-client.7c7d7da492884579abc147dc6039141a');
       };
       (function(d) {
         var a = d.createElement('script'); a.type = 'text/javascript';
@@ -24,8 +26,8 @@
         a.src = 'https://api-cdn.amazon.com/sdk/login1.js';
         d.getElementById('amazon-root').appendChild(a);
       })(document);
-   </script>
-    %>
+     </script>
+
     <div>
       <%= if get_flash(@conn, :info) do %>
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

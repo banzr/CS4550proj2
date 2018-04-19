@@ -10,5 +10,9 @@ import React from "react";
 // export default SocialLogin(LoginButton);
 
 export default function AmazonButton({ onClick }) {
-  return <button onClick={onClick}>Login With Amazon</button>
+  return (<button onClick={onClick}>
+      <img border="0" alt="Login with Amazon"
+           src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+           width="156" height="32" />
+  </button>)
 }
