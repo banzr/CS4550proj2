@@ -6,6 +6,7 @@ defmodule Jeopardy.Sessions.Session do
   schema "sessions" do
     field :score, :integer
     field :answered_clues, {:array, :integer}
+    field :answers, {:array, :string}
     belongs_to :game, Jeopardy.Games.Game
     belongs_to :user, Jeopardy.Users.User
 
@@ -15,7 +16,7 @@ defmodule Jeopardy.Sessions.Session do
   @doc false
   def changeset(session, attrs) do
     session
-    |> cast(attrs, [:score, :game_id, :user_id, :answered_clues])
+    |> cast(attrs, [:score, :game_id, :user_id, :answered_clues, :answers])
     |> validate_required([])
   end
 end
