@@ -359,7 +359,8 @@ defmodule JeopardyWeb.GameController do
         value = String.to_integer(intent["slots"]["number"]["value"])
         IO.puts("VAL #{Kernel.inspect(value)}")
 
-        if value < 200 do
+        cond do
+          value < 6 && value > 0 ->
           IO.puts("CHOOSE CAT")
           category_id = Enum.at(categories, value - 1)
           questions = Games.get_clue_by_category_id(category_id)
@@ -412,7 +413,7 @@ defmodule JeopardyWeb.GameController do
               shouldEndSession: false
             }
           })
-        else
+        Enum.member?([200, 400, 600, 800, 1000], value) ->
           IO.puts("CHOSE QUESS")
           category_id = attributes["chosenCat"]
           IO.puts("QIESSSSSSSS #{Kernel.inspect(category_id)}")
@@ -455,6 +456,42 @@ defmodule JeopardyWeb.GameController do
                 outputSpeech: %{
                   type: "PlainText",
                   text: "Please say what or who is followed by the answer"
+                }
+              },
+              shouldEndSession: false
+            }
+          })
+        true ->
+          conn
+          |> put_status(:ok)
+          |> json(%{
+            version: "1.0",
+            sessionAttributes: %{
+              clues: [question.id] ++ clue_list,
+              categories: categories,
+              chosenCat: category_id,
+              answer: question.answer,
+              qValue: value,
+              score: score,
+              numbered: numbered_categories,
+              session_id: sessionId
+            },
+            response: %{
+              outputSpeech: %{
+                type: "PlainText",
+                text:
+                  "The value you provided is: " <> Kernel.inspect(value) <> " which is invalid.  Please provide another value"
+              },
+              card: %{
+                type: "Simple",
+                title: "Jeopardy",
+                content:
+                  "The value you provided is: " <> Kernel.inspect(value) <> " which is invalid.  Please provide another value"
+              },
+              reprompt: %{
+                outputSpeech: %{
+                  type: "PlainText",
+                  text: "Please provide another value"
                 }
               },
               shouldEndSession: false
