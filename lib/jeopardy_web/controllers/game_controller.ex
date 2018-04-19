@@ -277,8 +277,11 @@ defmodule JeopardyWeb.GameController do
     case name do
       "restartGame" ->
         if (user.unfinished_id) do
+          IO.puts("CONTINUE GAME")
           uSession = Sessions.get_session!(user.unfinished_id)
           IO.puts("USESSION #{Kernel.inspect(uSession)}")
+          len = Kernel.length(uSession.answered_clues)
+          if (len < 5) do
           uGameId = uSession.game.id
           categories = Games.get_category_by_game_id(uGameId)
           categories_id = Enum.map(categories, fn cat -> cat.id end)
@@ -301,33 +304,38 @@ defmodule JeopardyWeb.GameController do
               answer: "",
               score: uSession.score,
               numbered: numbered_categories_list,
+              chosenCat: -1,
               session_id: uSession.id
             },
             response: %{
               outputSpeech: %{
                 type: "PlainText",
                 text:
-                  "Continue old game with following categories: " <>
+                  "Continuing game. You have: " <> Kernel.inspect(5 - len) <> " questions left with following categories: " <>
                     numbered_categories_list <> ". Please pick a number"
               },
               card: %{
                 type: "Simple",
                 title: "Jeopary",
                 content:
-                  "Continue old game with following categories: " <>
+                  "Continuing game. You have: " <> Kernel.inspect(5 - len) <> " with following categories: " <>
                     numbered_categories_list <> ". Please pick one number!"
               },
               reprompt: %{
                 outputSpeech: %{
                   type: "PlainText",
-                  text: "Can I help you with anything else?"
+                  text: "Do you want to continue your game?"
                 }
               },
               shouldEndSession: false
             }
           })
-         
+          else
+            IO.puts("CONT BUT NOT CONT")
+            create(conn, data, user)
+          end
         else
+          IO.puts("CONTINUE BUT NEW GMAE")
           create(conn, data, user)
         end
 
@@ -336,7 +344,7 @@ defmodule JeopardyWeb.GameController do
         value = String.to_integer(intent["slots"]["number"]["value"])
 	IO.puts("VAL #{Kernel.inspect(value)}")
         if (value < 200) do
-
+          IO.puts("CHOOSE CAT")
         category_id = Enum.at(categories, value - 1)
         questions = Games.get_clue_by_category_id(category_id)
         
@@ -390,7 +398,7 @@ defmodule JeopardyWeb.GameController do
         })
 
         else
-
+        IO.puts("CHOSE QUESS")
         category_id = attributes["chosenCat"]
         IO.puts("QIESSSSSSSS #{Kernel.inspect(category_id)}")
         questions = Games.get_clue_by_category_id(category_id)
@@ -438,6 +446,7 @@ defmodule JeopardyWeb.GameController do
         end
 
       "answerResponse" ->
+        IO.puts("ANSWER RES")
         value = String.downcase(intent["slots"]["answer"]["value"])
         correctA = String.downcase(attributes["answer"])
         score = attributes["score"]
@@ -448,7 +457,7 @@ defmodule JeopardyWeb.GameController do
         if correctA =~ value || correctA =~ "the " <> value || correctA =~ "a " <> value do
           new_score = Kernel.inspect(score + qValue)
 
-          if len == 5 do
+          if len >= 5 do
             Users.update_user(user, %{unfinished_id: nil})
             response_for_answer(
               conn,
@@ -481,7 +490,7 @@ defmodule JeopardyWeb.GameController do
             )
           end
         else
-          if len == 5 do
+          if len >= 5 do
             Users.update_user(user, %{unfinished_id: nil})
             response_for_answer(
               conn,
@@ -515,6 +524,8 @@ defmodule JeopardyWeb.GameController do
           end
         end
 
+     "noGame" ->
+       create(conn, data, user)
       _ ->
         conn
         |> put_status(:error)
@@ -552,6 +563,7 @@ defmodule JeopardyWeb.GameController do
         answer: "",
         qValue: 0,
         score: String.to_integer(new_score),
+        chosenCat: -1,
         numbered: categories_list,
         session_id: sessionId
       },
