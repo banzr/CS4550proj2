@@ -5,7 +5,7 @@ defmodule JeopardyWeb.GameChannel do
   def join("game:lobby", payload, socket) do
     if authorized?(payload) do
       send(self(), {:after_join, %{msg: "new user"}})
-      {:ok,%{game: Game.fetch_sessions}, socket}
+      {:ok,%{sessions: Game.fetch_sessions}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -28,8 +28,8 @@ defmodule JeopardyWeb.GameChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-  def broadcast_change(session) do
-    payload = %{game: Game.fetch_sessions}
+  def broadcast_change() do
+    payload = %{sessions: Game.fetch_sessions}
     JeopardyWeb.Endpoint.broadcast("game:lobby", "change", payload)
   end
 

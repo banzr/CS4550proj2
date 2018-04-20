@@ -41,6 +41,6 @@ export default createReducer(initialState, {
     const current = state.placeholder;
     let sessions = state.sessions
     //return { ...state, sessions : sessions  };
-    return { ...state, sessions : payload.game, highscorePlayers : payload.game };
+    return { ...state, sessions : payload.sessions, highscorePlayers : payload.sessions };
 
   }});

@@ -36,6 +36,7 @@ defmodule JeopardyWeb.Router do
     pipe_through(:api)
     resources("/users", UserController, except: [:new, :edit])
     resources("/games", GameController)
+    resources("/sessions", SessionController)
     resources("/categories", CategoryController)
     resources("/category_items", CategoryItemController)
     resources("/clues", ClueController)
