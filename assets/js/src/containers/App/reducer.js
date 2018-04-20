@@ -40,7 +40,7 @@ export default createReducer(initialState, {
     console.log("update action fired with ", payload);
     const current = state.placeholder;
     let sessions = state.sessions
-    return { ...state, sessions : sessions  };
-    //return { ...state, sessions : payload, highscorePlayers : payload };
+    //return { ...state, sessions : sessions  };
+    return { ...state, sessions : payload.game, highscorePlayers : payload.game };
 
   }});

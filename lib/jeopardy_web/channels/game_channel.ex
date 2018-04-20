@@ -5,7 +5,7 @@ defmodule JeopardyWeb.GameChannel do
   def join("game:lobby", payload, socket) do
     if authorized?(payload) do
       send(self(), {:after_join, %{msg: "new user"}})
-      {:ok,Game.fetch_sessions, socket}
+      {:ok,%{game: Game.fetch_sessions}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -26,6 +26,11 @@ defmodule JeopardyWeb.GameChannel do
   # by sending replies to requests from the client
   def handle_in("ping", payload, socket) do
     {:reply, {:ok, payload}, socket}
+  end
+
+  def broadcast_change(session) do
+    payload = %{game: Game.fetch_sessions}
+    JeopardyWeb.Endpoint.broadcast("game:lobby", "change", payload)
   end
 
   # It is also common to receive messages from the client and

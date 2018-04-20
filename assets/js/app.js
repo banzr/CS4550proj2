@@ -22,6 +22,9 @@ import {Socket} from "phoenix"
 
 import render from "./src/index";
 
+function successFunction(){
+  console.log('success');
+}
 
 $(function() {
   var root = document.getElementById('root');
@@ -31,4 +34,19 @@ $(function() {
   if (!root) return;
 
   render(root,channel);
+// start :- This code block should be removed: 
+// used only to create session from UI to check channel functionality
+  $("#updateSession").on("click", function(){
+    console.log("clicked !!!!!");
+    $.ajax("/api/v1/sessions", {
+      method: "post",
+      dataType: "json",
+      contentType: "application/json; charset=UTF-8",
+      data: JSON.stringify({ session:{ score: 500 , game_id: 1, user_id:1}}),
+      success: (resp) => {
+        console.log("success");
+      },
+    });
+  })
+  //end
 });

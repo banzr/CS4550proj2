@@ -25,6 +25,7 @@ class App extends React.Component {
 
     channel.on("update", updateState)
     channel.on("shout", resp => { console.log("Message", resp) })
+    channel.on("change", updateState)
 
   }
   // TODO: websocket stuff here (in constructor/etc)
@@ -42,36 +43,39 @@ class App extends React.Component {
       <div>
         <Nav profile={profile}/>
         <div style={{margin: '2em'}}>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/games" component={GamesList} />
-          <Route
-            exact
-            path="/users/:userId"
-            render={({ match: { params: { userId } } }) => (
-              <User userId={userId} />
-            )}
-            />
-          <Route
-            exact
-            path="/games/:gameId"
-            render={({ match: { params: { gameId } } }) => (
-              <Game gameId={gameId} />
-            )}
-            />
-          <Route exact path="/privacy" component={Privacy} />
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/games" component={GamesList} />
+            <Route
+              exact
+              path="/users/:userId"
+              render={({ match: { params: { userId } } }) => (
+                <User userId={userId} />
+              )}
+              />
+            <Route
+              exact
+              path="/games/:gameId"
+              render={({ match: { params: { gameId } } }) => (
+                <Game gameId={gameId} />
+              )}
+              />
+            <Route exact path="/privacy" component={Privacy} />
 
-        </Switch>
+          </Switch>
 
-        {/* placeholder stuff for example of using actions/etc. */}
-        {/*<p>Placeholder value: {placeholder}</p>
+          {/* placeholder stuff for example of using actions/etc. */}
+          {/*<p>Placeholder value: {placeholder}</p>
         <Button onClick={incrementBy3}>increment by 3</Button>
         <Button onClick={decrementBy2}>decrement by 2</Button>*/}
-        </div>
       </div>
-    );
-  }
+      //start: dummy code block
+      <button id="updateSession">CLICK ME TO CREATE A NEW SESSION!</button>
+      //end
+    </div>
+  );
+}
 }
 
 const mapStateToProps = createStructuredSelector({
