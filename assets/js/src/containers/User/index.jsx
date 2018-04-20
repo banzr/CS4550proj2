@@ -11,15 +11,25 @@ class User extends React.Component {
     const { props: { userId, sessions } } = this;
     return (
       <div>
-        <Placeholder name={`Player ${userId}`} />
-        <h3>Sessions</h3>
-        <ul>
-          {sessions.map(({ game: { id: gameId }, score }, index) => (
-            <li key={index}>
-              Game {gameId}, score {score}
-            </li>
-          ))}
-        </ul>
+        <h1 style={{textAlign : 'center'}}>Sessions for Player {userId}</h1>
+        <table className="table" style={{width: '55em', marginLeft: '15%', marginTop: '1%'}}>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Player</th>
+              <th scope="col">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sessions.map(({ game: { id: gameId }, score }, index) => (
+              <tr key={index}>
+                <th scope="row">{index}</th>
+                <td>Game {gameId}</td>
+                <td>{score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }

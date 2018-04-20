@@ -13,3 +13,13 @@ export const selectSessions = createSelector(
   selectApp,
   appState => appState.sessions
 );
+
+export const selectHighscorePlayers = createSelector(
+  selectApp,
+  appState => appState.highscorePlayers
+);
+
+export const selectLogin = createSelector(
+  selectApp,
+  appState => appState.loginName
+);

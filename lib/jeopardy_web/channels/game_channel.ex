@@ -6,7 +6,6 @@ defmodule JeopardyWeb.GameChannel do
     if authorized?(payload) do
       send(self(), {:after_join, %{msg: "new user"}})
       {:ok,Game.fetch_sessions, socket}
-
     else
       {:error, %{reason: "unauthorized"}}
     end

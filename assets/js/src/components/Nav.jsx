@@ -3,7 +3,19 @@ import { NavItem , Navbar } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 
-export default function Nav() {
+export default function Nav({ loginName }) {
+    let session_info;
+    if(loginName==undefined || loginName=='' || loginName==null){
+      session_info =
+        <NavItem >
+          <NavLink exact to="/login" className="nav-link rightLink" >
+            Login
+          </NavLink>
+        </NavItem>;
+    }
+    else {
+      session_info = <h5 style={{color: 'white' }}>Welcome, {loginName}</h5>;
+    }
   // TODO: stop using bootstrap for everything
   return (
     <nav className="navbar navbar-dark bg-dark navbar-expand colorNav navUl">
@@ -28,11 +40,8 @@ export default function Nav() {
           </NavItem>
         </ul>
         <ul className="navbar-nav ml-auto">
-          <NavItem >
-            <NavLink exact to="/login" className="nav-link rightLink" >
-              Login
-            </NavLink>
-          </NavItem>
+            { session_info }
+
         </ul>
       </nav >
     );

@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { decrement, increment ,update } from "./actions";
 import { Route, Switch, withRouter } from "react-router-dom";
-import { selectPlaceholder } from "./selectors";
+import { selectPlaceholder, selectLogin } from "./selectors";
 
 class App extends React.Component {
   constructor(props) {
@@ -36,11 +36,12 @@ class App extends React.Component {
   decrementBy2 = () => this.props.decrement(2);
 
   render() {
-    const { incrementBy3, decrementBy2, props: { placeholder } } = this;
+    const { incrementBy3, decrementBy2, props: { placeholder , login } } = this;
 
     return (
       <div>
-        <Nav />
+        <Nav loginName={login}/>
+        <div style={{margin: '2em'}}>
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
@@ -64,16 +65,18 @@ class App extends React.Component {
         </Switch>
 
         {/* placeholder stuff for example of using actions/etc. */}
-        <p>Placeholder value: {placeholder}</p>
+        {/*<p>Placeholder value: {placeholder}</p>
         <Button onClick={incrementBy3}>increment by 3</Button>
-        <Button onClick={decrementBy2}>decrement by 2</Button>
+        <Button onClick={decrementBy2}>decrement by 2</Button>*/}
+        </div>
       </div>
     );
   }
 }
 
 const mapStateToProps = createStructuredSelector({
-  placeholder: selectPlaceholder
+  placeholder: selectPlaceholder,
+  login: selectLogin
 });
 
 const mapDispatchToProps = dispatch => ({

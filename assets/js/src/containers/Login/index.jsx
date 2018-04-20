@@ -12,7 +12,7 @@ class Login extends React.Component {
 
     return (
       <div>
-        <Placeholder name="login" />
+        <h1 style={{textAlign: 'center'}}>Login</h1>
         <p>Token: {token}</p>
         <Button onClick={handleLogin}>login</Button>
       </div>

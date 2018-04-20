@@ -7,6 +7,12 @@ font-size: 20px;
   background-color: #2E1114;
 }
 
+.bg{
+  width: inherit;
+  height: inherit;
+  background: linear-gradient(to right, white, rgba(255,255,255,0), rgba(248,248,248,0) ,rgba(245,245,245, 1), rgba(232,232,232, 1) ,rgba(220,220,220 ,1));
+}
+
 .card {
   width: 250px;
   height: 250px;
@@ -38,5 +44,9 @@ position: relative;
 .bottom{
   position: absolute;
  bottom: 5px;
+
+ .bgColor{
+   background-color: blue;
+ }
 
 }
