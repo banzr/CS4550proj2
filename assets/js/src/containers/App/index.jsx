@@ -70,9 +70,8 @@ class App extends React.Component {
         <Button onClick={incrementBy3}>increment by 3</Button>
         <Button onClick={decrementBy2}>decrement by 2</Button>*/}
       </div>
-      //start: dummy code block
+      {/*start: dummy code block*/}
       <button id="updateSession">CLICK ME TO CREATE A NEW SESSION!</button>
-      //end
     </div>
   );
 }
