@@ -31,7 +31,7 @@ defmodule JeopardyWeb.SessionController do
     session = Sessions.get_session!(id)
 
     with {:ok, %Session{} = session} <- Sessions.update_session(session, session_params) do
-      JeopardyWeb.GameChannel.broadcast_change(session)
+      JeopardyWeb.GameChannel.broadcast_change()
       render(conn, "show.json", session: session)
     end
   end
