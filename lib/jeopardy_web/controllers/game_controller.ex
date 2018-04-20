@@ -24,7 +24,6 @@ defmodule JeopardyWeb.GameController do
     IO.puts("#{Kernel.inspect(data)}")
     answer = data
     session = answer["session"]
-    context = answer["context"]
     request = answer["request"]
     userId = session["user"]["userId"]
     user = Users.get_or_create_user(userId)
@@ -183,7 +182,7 @@ defmodule JeopardyWeb.GameController do
         val = 200
 
         for n <- [0, 1, 2, 3, 4] do
-          [clue_req | tail] =
+          [clue_req | _] =
             Enum.filter(cat["clues"], fn clue -> clue["value"] == val * (n + 1) end)
 
           #          IO.puts("CLUE REQ #{Kernel.inspect(clue_req)}")
@@ -224,7 +223,7 @@ defmodule JeopardyWeb.GameController do
     filtered = Enum.filter(category["clues"], fn cl -> cl["value"] == val * (n + 1) end)
 
     if filtered !== [] do
-      [clue | tail] = filtered
+      [clue | _] = filtered
       clue
     else
       nil
@@ -270,9 +269,7 @@ defmodule JeopardyWeb.GameController do
     numbered_categories = attributes["numbered"]
     #    IO.puts("CATEGORIES #{Kernel.inspect(categories)}")
     answered_clues = attributes["clues"]
-    game_id = attributes["game_id"]
     clue_list = attributes["clues"]
-    context = answer["context"]
     request = answer["request"]
     intent = request["intent"]
     name = intent["name"]
@@ -360,7 +357,7 @@ defmodule JeopardyWeb.GameController do
         IO.puts("VAL #{Kernel.inspect(value)}")
 
         cond do
-          value < 6 && value > 0 ->
+          value < 6 && value > 0 && (attributes["chosenCat"] == -1)->
           IO.puts("CHOOSE CAT")
           category_id = Enum.at(categories, value - 1)
           questions = Games.get_clue_by_category_id(category_id)
@@ -413,7 +410,7 @@ defmodule JeopardyWeb.GameController do
               shouldEndSession: false
             }
           })
-        Enum.member?([200, 400, 600, 800, 1000], value) ->
+        Enum.member?([200, 400, 600, 800, 1000], value) && (attributes["chosenCat"] != -1)->
           IO.puts("CHOSE QUESS")
           category_id = attributes["chosenCat"]
           IO.puts("QIESSSSSSSS #{Kernel.inspect(category_id)}")
@@ -467,14 +464,14 @@ defmodule JeopardyWeb.GameController do
           |> json(%{
             version: "1.0",
             sessionAttributes: %{
-              clues: [question.id] ++ clue_list,
-              categories: categories,
-              chosenCat: category_id,
-              answer: question.answer,
-              qValue: value,
-              score: score,
-              numbered: numbered_categories,
-              session_id: sessionId
+              clues: attributes["clues"],
+              categories: attributes["categories"],
+              chosenCat: attributes["chosenCat"],
+              answer: attributes["answer"],
+              qValue: attributes["qValue"],
+              score: attributes["score"],
+              numbered: attributes["numbered"],
+              session_id: attributes["session_id"]
             },
             response: %{
               outputSpeech: %{
@@ -586,8 +583,9 @@ defmodule JeopardyWeb.GameController do
         create(conn, data, user)
 
       _ ->
+        IO.puts("WRONG DATA #{Kernel.inspect(data)}")
         conn
-        |> put_status(:error)
+        |> put_status(:not_found)
     end
   end
 
