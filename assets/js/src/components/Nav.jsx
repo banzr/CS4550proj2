@@ -3,9 +3,9 @@ import { NavItem , Navbar } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 
-export default function Nav({ loginName }) {
+export default function Nav({ profile }) {
     let session_info;
-    if(loginName==undefined || loginName=='' || loginName==null){
+    if(profile.name==undefined || profile.name=='' || profile.name==null){
       session_info =
         <NavItem >
           <NavLink exact to="/login" className="nav-link rightLink" >
@@ -14,7 +14,7 @@ export default function Nav({ loginName }) {
         </NavItem>;
     }
     else {
-      session_info = <h5 style={{color: 'white' }}>Welcome, {loginName}</h5>;
+      session_info = <h5 style={{color: 'white' }}>Welcome, {profile.name}</h5>;
     }
   // TODO: stop using bootstrap for everything
   return (

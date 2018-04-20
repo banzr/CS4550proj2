@@ -2,7 +2,7 @@ defmodule Jeopardy.Game do
   alias Jeopardy.Sessions
 
   def fetch_sessions do
-    Sessions.list_sessions |> list_to_sanitize
+    Sessions.list_sessions() |> list_to_sanitize
   end
 
   defp list_to_sanitize(list) do
@@ -20,6 +20,5 @@ defmodule Jeopardy.Game do
   end
 end
 
-
-#conversion of ecto to map : https://stackoverflow.com/questions/36512627/elixir-convert-struct-to-map,
-#https://coderwall.com/p/fhsehq/fix-encoding-issue-with-ecto-and-poison
+# conversion of ecto to map : https://stackoverflow.com/questions/36512627/elixir-convert-struct-to-map,
+# https://coderwall.com/p/fhsehq/fix-encoding-issue-with-ecto-and-poison

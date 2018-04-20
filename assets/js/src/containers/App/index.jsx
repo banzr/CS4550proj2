@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { decrement, increment ,update } from "./actions";
 import { Route, Switch, withRouter } from "react-router-dom";
-import { selectPlaceholder, selectLogin } from "./selectors";
+import { selectPlaceholder, selectProfile } from "./selectors";
 
 class App extends React.Component {
   constructor(props) {
@@ -36,11 +36,11 @@ class App extends React.Component {
   decrementBy2 = () => this.props.decrement(2);
 
   render() {
-    const { incrementBy3, decrementBy2, props: { placeholder , login } } = this;
+    const { incrementBy3, decrementBy2, props: { placeholder , profile } } = this;
 
     return (
       <div>
-        <Nav loginName={login}/>
+        <Nav profile={profile}/>
         <div style={{margin: '2em'}}>
         <Switch>
           <Route exact path="/" component={Home} />
@@ -76,7 +76,7 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   placeholder: selectPlaceholder,
-  login: selectLogin
+  profile: selectProfile
 });
 
 const mapDispatchToProps = dispatch => ({

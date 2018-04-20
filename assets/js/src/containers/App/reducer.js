@@ -19,7 +19,7 @@ const initialState = {
     {game: {id: 3} , player: {id: 1}, score :600 },
   ],
 
-  loginName : 'Husky'
+  profile : {name : ''}
 };
 
 export default createReducer(initialState, {

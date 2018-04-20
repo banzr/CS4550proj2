@@ -19,7 +19,7 @@ export const selectHighscorePlayers = createSelector(
   appState => appState.highscorePlayers
 );
 
-export const selectLogin = createSelector(
+export const selectProfile = createSelector(
   selectApp,
-  appState => appState.loginName
+  appState => appState.profile
 );

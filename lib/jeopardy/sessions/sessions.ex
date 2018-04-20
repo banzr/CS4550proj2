@@ -19,9 +19,8 @@ defmodule Jeopardy.Sessions do
   """
   def list_sessions do
     Repo.all(Session)
-    |>Repo.preload(:user)
-    |>Repo.preload(:game)
-
+    |> Repo.preload(:user)
+    |> Repo.preload(:game)
   end
 
   @doc """
@@ -38,7 +37,10 @@ defmodule Jeopardy.Sessions do
   ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id)
+  def get_session!(id), do:
+    Repo.get!(Session, id)
+    |> Repo.preload([:user, :game])
+
 
   @doc """
   Creates a session.
@@ -112,6 +114,7 @@ defmodule Jeopardy.Sessions do
 
   def get_or_create_session(id) do
     session = Repo.get(Session, id)
+
     if session do
       session
       |> Repo.preload([:user, :game])
@@ -121,6 +124,6 @@ defmodule Jeopardy.Sessions do
   end
 
   def get_session_by_user_id(id) do
-    Repo.all(from s in Session, where: s.user_id == ^id)
+    Repo.all(from(s in Session, where: s.user_id == ^id))
   end
 end
