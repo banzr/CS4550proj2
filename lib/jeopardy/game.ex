@@ -22,7 +22,7 @@ defmodule Jeopardy.Game do
   end
 
   defp retrieveClues(answered_clues) do
-    if answered_clues != nil do
+    if answered_clues != nil && Kernel.length(answered_clues) != 0 do
       len = Kernel.length(answered_clues) - 1
       numbers = 0..len
       numbers_list = Enum.to_list(numbers)
