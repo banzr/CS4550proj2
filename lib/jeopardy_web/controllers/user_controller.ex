@@ -20,7 +20,7 @@ defmodule JeopardyWeb.UserController do
   end
 
   def valid_token?(token) do
-    our_app_id = "amzn1.application-oa2-client.7c7d7da492884579abc147dc6039141a"
+    our_app_id = "amzn1.application-oa2-client.fa05aae1244646cea1fe24494d3a8a04"
     auth_url = "https://api.amazon.com/auth/o2/tokeninfo?access_token=" <> token
     {:ok, response} = HTTPoison.get(auth_url, [], ssl: [{:versions, [:"tlsv1.2"]}])
     %{"aud" => app_id} = Poison.decode!(response.body)
