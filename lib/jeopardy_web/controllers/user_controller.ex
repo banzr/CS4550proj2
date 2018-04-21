@@ -12,14 +12,17 @@ defmodule JeopardyWeb.UserController do
   end
 
   def get_profile(conn, %{"token" => token}) do
+    json(conn, retrieve_profile(token))
+  end
+
+  def retrieve_profile(token) do
     if valid_token?(token) do
       profile_url = "https://api.amazon.com/user/profile"
       headers = [Authorization: "Bearer #{token}"]
       {:ok, response} = HTTPoison.get(profile_url, headers, ssl: [{:versions, [:"tlsv1.2"]}])
-
-      json(conn, %{profile: Poison.decode!(response.body)})
+      Poison.decode!(response.body)
     else
-      json(conn, %{})
+      %{}
     end
   end
 

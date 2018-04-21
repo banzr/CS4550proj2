@@ -11,7 +11,10 @@ const getProfile = (token, onSuccess) =>
   doPost({
     data: { token },
     endpoint: "profile",
-    success: ({ profile }) => onSuccess(profile)
+    success: (data) =>{
+        console.log(data);
+        onSuccess(data.profile);
+    }
   });
 
 const verifyUser = (userId, amazonUserId, onVerify) => {

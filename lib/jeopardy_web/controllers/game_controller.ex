@@ -9,6 +9,7 @@ defmodule JeopardyWeb.GameController do
   alias Jeopardy.Sessions
   alias Jeopardy.Sessions.Session
   alias JeopardyWeb.GameChannel
+  alias JeopardyWeb.UserController
   action_fallback(JeopardyWeb.FallbackController)
 
   def index(conn, _params) do
@@ -17,73 +18,96 @@ defmodule JeopardyWeb.GameController do
   end
 
   def alexa(conn, request) do
-     #   [a | _] = Map.keys(request)
+    #   [a | _] = Map.keys(request)
 
     #    { status, data} = JSON.decode(a) #request
     data = request
     IO.puts("#{Kernel.inspect(data)}")
     answer = data
-#    IO.puts("[DEBUG] Session:" <> answer["session"])
+    #    IO.puts("[DEBUG] Session:" <> answer["session"])
     session = answer["session"]
     request = answer["request"]
-    userId = session["user"]["userId"]
-    user = Users.get_or_create_user(userId)
-    uSession = nil
 
-    if user.unfinished_id do
-      uSession = Sessions.get_session!(user.unfinished_id)
-    end
-
-    type = request["type"]
-    intent = request["intent"]
-    IO.puts("#{Kernel.inspect(intent)}")
-    #    userId = session["user"]["userId"]
-    #    accessToken = session["user"]["accessToken"]
-    #    attributes = session["attributes"]
-    #    answered_clues = attributes["clues"]
-    #    game_id = attributes["game_id"]
-    #    clue_list = attributes["questions"]
-    #    user_input = answer["context"]
-    # if new session, get user and new game
-    if type == "LaunchRequest" ||
-         (type == "IntentRequest" && request["intent"]["name"] == "newGame") do
-      if uSession do
-        conn
-        |> put_status(:ok)
-        |> json(%{
-          version: "1.0",
-          sessionAttributes: %{
-            clues: [],
-            categories: [],
-            answer: "",
-            score: 0,
-            numbered: [],
-            session_id: uSession.id
+    if session["user"]["accessToken"] == nil do
+      conn
+      |> put_status(:ok)
+      |> json(%{
+        version: "1.0",
+        response: %{
+          outputSpeech: %{
+            type: "PlainText",
+            text:
+              " Please use the companion app to authenticate on Amazon to start using this skill"
           },
-          response: %{
-            outputSpeech: %{
-              type: "PlainText",
-              text: "You have an unfinished game. Do you want to continue?"
+          card: %{
+            type: "LinkAccount"
+          },
+          shouldEndSession: false
+        },
+        sessionAttributes: %{}
+      })
+    else
+      token = session["user"]["accessToken"]
+      %{"user_id" => userId} = UserController.retrieve_profile(token)
+
+      user = Users.get_or_create_user(userId)
+      uSession = nil
+
+      if user.unfinished_id do
+        uSession = Sessions.get_session!(user.unfinished_id)
+      end
+
+      type = request["type"]
+      intent = request["intent"]
+      IO.puts("#{Kernel.inspect(intent)}")
+      #    userId = session["user"]["userId"]
+      #    accessToken = session["user"]["accessToken"]
+      #    attributes = session["attributes"]
+      #    answered_clues = attributes["clues"]
+      #    game_id = attributes["game_id"]
+      #    clue_list = attributes["questions"]
+      #    user_input = answer["context"]
+      # if new session, get user and new game
+      if type == "LaunchRequest" ||
+           (type == "IntentRequest" && request["intent"]["name"] == "newGame") do
+        if uSession do
+          conn
+          |> put_status(:ok)
+          |> json(%{
+            version: "1.0",
+            sessionAttributes: %{
+              clues: [],
+              categories: [],
+              answer: "",
+              score: 0,
+              numbered: [],
+              session_id: uSession.id
             },
-            card: %{
-              type: "Simple",
-              title: "Jeopary",
-              content: "You have an unfinished game. Do you want to continue?"
-            },
-            reprompt: %{
+            response: %{
               outputSpeech: %{
                 type: "PlainText",
-                text: "Can I help you with anything else?"
-              }
-            },
-            shouldEndSession: false
-          }
-        })
+                text: "You have an unfinished game. Do you want to continue?"
+              },
+              card: %{
+                type: "Simple",
+                title: "Jeopary",
+                content: "You have an unfinished game. Do you want to continue?"
+              },
+              reprompt: %{
+                outputSpeech: %{
+                  type: "PlainText",
+                  text: "Can I help you with anything else?"
+                }
+              },
+              shouldEndSession: false
+            }
+          })
+        else
+          create(conn, data, user)
+        end
       else
-        create(conn, data, user)
+        parse_answer(conn, data, user)
       end
-    else
-      parse_answer(conn, data, user)
     end
   end
 
@@ -107,6 +131,7 @@ defmodule JeopardyWeb.GameController do
 
       with {:ok, %Session{} = session} <- Sessions.create_session(session_params) do
         GameChannel.broadcast_change()
+
         numbered_categories_list =
           Enum.join(
             Enum.map([1, 2, 3, 4, 5], fn n ->
@@ -359,143 +384,147 @@ defmodule JeopardyWeb.GameController do
         IO.puts("VAL #{Kernel.inspect(value)}")
 
         cond do
-          value < 6 && value > 0 && (attributes["chosenCat"] == -1)->
-          IO.puts("CHOOSE CAT")
-          category_id = Enum.at(categories, value - 1)
-          questions = Games.get_clue_by_category_id(category_id)
+          value < 6 && value > 0 && attributes["chosenCat"] == -1 ->
+            IO.puts("CHOOSE CAT")
+            category_id = Enum.at(categories, value - 1)
+            questions = Games.get_clue_by_category_id(category_id)
 
-          value_questions =
-            Enum.join(
-              Enum.reverse(
-                Enum.map(
-                  Enum.filter(questions, fn k -> !Enum.member?(answered_clues, k.id) end),
-                  fn q -> Kernel.inspect(q.value) end
-                )
-              ),
-              ", "
-            )
+            value_questions =
+              Enum.join(
+                Enum.reverse(
+                  Enum.map(
+                    Enum.filter(questions, fn k -> !Enum.member?(answered_clues, k.id) end),
+                    fn q -> Kernel.inspect(q.value) end
+                  )
+                ),
+                ", "
+              )
 
-          conn
-          |> put_status(:ok)
-          |> json(%{
-            version: "1.0",
-            sessionAttributes: %{
-              clues: clue_list,
-              categories: categories,
-              chosenCat: category_id,
-              score: attributes["score"],
-              answer: "",
-              qValue: -1,
-              numbered: numbered_categories,
-              session_id: sessionId
-            },
-            response: %{
-              outputSpeech: %{
-                type: "PlainText",
-                text:
-                  "Current category has questions with following values: " <>
-                    value_questions <> ". Please choose a question by its value"
+            conn
+            |> put_status(:ok)
+            |> json(%{
+              version: "1.0",
+              sessionAttributes: %{
+                clues: clue_list,
+                categories: categories,
+                chosenCat: category_id,
+                score: attributes["score"],
+                answer: "",
+                qValue: -1,
+                numbered: numbered_categories,
+                session_id: sessionId
               },
-              card: %{
-                type: "Simple",
-                title: "Jeopardy",
-                content:
-                  "Current category has questions with following valules: " <>
-                    value_questions <> " Please choose a question by its value"
-              },
-              reprompt: %{
+              response: %{
                 outputSpeech: %{
                   type: "PlainText",
-                  text: "Please say the number that corresponds to the desired value"
-                }
-              },
-              shouldEndSession: false
-            }
-          })
-        Enum.member?([200, 400, 600, 800, 1000], value) && (attributes["chosenCat"] != -1)->
-          IO.puts("CHOSE QUESS")
-          category_id = attributes["chosenCat"]
-          IO.puts("QIESSSSSSSS #{Kernel.inspect(category_id)}")
-          questions = Games.get_clue_by_category_id(category_id)
-          score = attributes["score"]
-          [question | _] = Enum.filter(questions, fn q -> q.value == value end)
-          # TODO, make sur equestion is not asked before
-          IO.puts("ANSWER IS #{question.answer}")
+                  text:
+                    "Current category has questions with following values: " <>
+                      value_questions <> ". Please choose a question by its value"
+                },
+                card: %{
+                  type: "Simple",
+                  title: "Jeopardy",
+                  content:
+                    "Current category has questions with following valules: " <>
+                      value_questions <> " Please choose a question by its value"
+                },
+                reprompt: %{
+                  outputSpeech: %{
+                    type: "PlainText",
+                    text: "Please say the number that corresponds to the desired value"
+                  }
+                },
+                shouldEndSession: false
+              }
+            })
 
-          conn
-          |> put_status(:ok)
-          |> json(%{
-            version: "1.0",
-            sessionAttributes: %{
-              clues: [question.id] ++ clue_list,
-              categories: categories,
-              chosenCat: category_id,
-              answer: question.answer,
-              qValue: value,
-              score: score,
-              numbered: numbered_categories,
-              session_id: sessionId
-            },
-            response: %{
-              outputSpeech: %{
-                type: "PlainText",
-                text:
-                  "The question you chose with value " <>
-                    Kernel.inspect(value) <>
-                    " is: " <> question.question <> ". Please provide an answer"
+          Enum.member?([200, 400, 600, 800, 1000], value) && attributes["chosenCat"] != -1 ->
+            IO.puts("CHOSE QUESS")
+            category_id = attributes["chosenCat"]
+            IO.puts("QIESSSSSSSS #{Kernel.inspect(category_id)}")
+            questions = Games.get_clue_by_category_id(category_id)
+            score = attributes["score"]
+            [question | _] = Enum.filter(questions, fn q -> q.value == value end)
+            # TODO, make sur equestion is not asked before
+            IO.puts("ANSWER IS #{question.answer}")
+
+            conn
+            |> put_status(:ok)
+            |> json(%{
+              version: "1.0",
+              sessionAttributes: %{
+                clues: [question.id] ++ clue_list,
+                categories: categories,
+                chosenCat: category_id,
+                answer: question.answer,
+                qValue: value,
+                score: score,
+                numbered: numbered_categories,
+                session_id: sessionId
               },
-              card: %{
-                type: "Simple",
-                title: "Jeopardy",
-                content:
-                  "The question you chose is: " <>
-                    question.question <> " Please provide an answer"
-              },
-              reprompt: %{
+              response: %{
                 outputSpeech: %{
                   type: "PlainText",
-                  text: "Please say what or who is followed by the answer"
-                }
+                  text:
+                    "The question you chose with value " <>
+                      Kernel.inspect(value) <>
+                      " is: " <> question.question <> ". Please provide an answer"
+                },
+                card: %{
+                  type: "Simple",
+                  title: "Jeopardy",
+                  content:
+                    "The question you chose is: " <>
+                      question.question <> " Please provide an answer"
+                },
+                reprompt: %{
+                  outputSpeech: %{
+                    type: "PlainText",
+                    text: "Please say what or who is followed by the answer"
+                  }
+                },
+                shouldEndSession: false
+              }
+            })
+
+          true ->
+            conn
+            |> put_status(:ok)
+            |> json(%{
+              version: "1.0",
+              sessionAttributes: %{
+                clues: attributes["clues"],
+                categories: attributes["categories"],
+                chosenCat: attributes["chosenCat"],
+                answer: attributes["answer"],
+                qValue: attributes["qValue"],
+                score: attributes["score"],
+                numbered: attributes["numbered"],
+                session_id: attributes["session_id"]
               },
-              shouldEndSession: false
-            }
-          })
-        true ->
-          conn
-          |> put_status(:ok)
-          |> json(%{
-            version: "1.0",
-            sessionAttributes: %{
-              clues: attributes["clues"],
-              categories: attributes["categories"],
-              chosenCat: attributes["chosenCat"],
-              answer: attributes["answer"],
-              qValue: attributes["qValue"],
-              score: attributes["score"],
-              numbered: attributes["numbered"],
-              session_id: attributes["session_id"]
-            },
-            response: %{
-              outputSpeech: %{
-                type: "PlainText",
-                text:
-                  "The value you provided is: " <> Kernel.inspect(value) <> " which is invalid.  Please provide another value"
-              },
-              card: %{
-                type: "Simple",
-                title: "Jeopardy",
-                content:
-                  "The value you provided is: " <> Kernel.inspect(value) <> " which is invalid.  Please provide another value"
-              },
-              reprompt: %{
+              response: %{
                 outputSpeech: %{
                   type: "PlainText",
-                  text: "Please provide another value"
-                }
-              },
-              shouldEndSession: false
-            }
-          })
+                  text:
+                    "The value you provided is: " <>
+                      Kernel.inspect(value) <> " which is invalid.  Please provide another value"
+                },
+                card: %{
+                  type: "Simple",
+                  title: "Jeopardy",
+                  content:
+                    "The value you provided is: " <>
+                      Kernel.inspect(value) <> " which is invalid.  Please provide another value"
+                },
+                reprompt: %{
+                  outputSpeech: %{
+                    type: "PlainText",
+                    text: "Please provide another value"
+                  }
+                },
+                shouldEndSession: false
+              }
+            })
         end
 
       "answerResponse" ->
@@ -586,6 +615,7 @@ defmodule JeopardyWeb.GameController do
 
       _ ->
         IO.puts("WRONG DATA #{Kernel.inspect(data)}")
+
         conn
         |> put_status(:not_found)
     end

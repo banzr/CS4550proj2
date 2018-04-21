@@ -51,5 +51,6 @@ defmodule JeopardyWeb.Router do
   scope "/oauth/v1", JeopardyWeb do
     post("/profile", UserController, :get_profile)
     post("/verify", UserController, :verify_user)
+    post("/token", UserController, :get_token)
   end
 end
