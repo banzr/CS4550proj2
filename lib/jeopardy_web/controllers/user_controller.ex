@@ -31,7 +31,7 @@ defmodule JeopardyWeb.UserController do
       IO.puts(user_id)
 
       %{ amazon_uid: uuid } = Users.get_user(user_id)
-      %{ user_id: amzn_usr_id } = profile
+      %{ "user_id" => amzn_usr_id } = profile
 
       if uuid === amzn_usr_id do
 
