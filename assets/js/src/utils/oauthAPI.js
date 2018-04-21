@@ -11,7 +11,10 @@ const getProfile = (userId, token, onSuccess) =>
   doPost({
     data: { token, user_id: userId },
     endpoint: "profile",
-    success: ({ profile }) => onSuccess(profile)
+    success: (data) =>{
+        console.log(data);
+        onSuccess(data.profile);
+    }
   });
 
 export default { getProfile };

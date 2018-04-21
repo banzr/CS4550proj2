@@ -34,15 +34,20 @@ defmodule JeopardyWeb.UserController do
       %{ "user_id" => amzn_usr_id } = profile
 
       if uuid === amzn_usr_id do
+        IO.puts("User ID matches")
 
         #Return success
         json(conn, %{profile: profile})
 
       else
+
+      IO.puts("User ID does NOT match")
         #Return failure
         json(conn, %{profile: %{}})
       end
     else
+      IO.puts("Invalid Token")
+
       #Return failure
       json(conn, %{profile: %{}})
     end
