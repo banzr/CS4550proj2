@@ -17,13 +17,15 @@ defmodule JeopardyWeb.UserController do
     IO.puts(token)
 
     url_1 = "https://api.amazon.com/auth/o2/tokeninfo?access_token=" <> token
-    %{ "aud" => aud } = Poison.decode!(HTTPoison.get(url_1, [], [ ssl: [{:versions, [:'tlsv1.2']}] ]).body)
+    { :ok, req1 } = HTTPoison.get(url_1, [], [ ssl: [{:versions, [:'tlsv1.2']}] ])
+    %{ "aud" => aud } = Poison.decode!(req1.body)
 
     if (aud ==  "amzn1.application-oa2-client.7c7d7da492884579abc147dc6039141a") do
 
       url_2 = "https://api.amazon.com/user/profile"
       headers = ["Authorization": "Bearer #{token}"]
-      profile = Poison.decode!(HTTPoison.get(url_2, headers, [ ssl: [{:versions, [:'tlsv1.2']}] ]).body)
+      { :ok, req2 } = HTTPoison.get(url_2, headers, [ ssl: [{:versions, [:'tlsv1.2']}] ])
+      profile = Poison.decode!(req2.body)
 
       IO.puts("user_id: ")
       IO.puts(user_id)
