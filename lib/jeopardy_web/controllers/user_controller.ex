@@ -13,7 +13,7 @@ defmodule JeopardyWeb.UserController do
 
   def get_profile(conn, %{"token" => token}) do
     if valid_token?(token) do
-      json(conn, retrieve_profile(token))
+      json(conn, %{profile: retrieve_profile(token)})
     else
       json(conn, %{})
     end
