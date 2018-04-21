@@ -5,19 +5,9 @@ import { INCREMENT, DECREMENT, UPDATE } from "./actions";
 const initialState = {
   placeholder: 0,
   // TODO: replace sample data with real data, loadead & kept synced via websockets
-  sessions: [
-    {game: {id: 0} , player: {id: 0}, score :500 },
-    {game: {id: 0} , player: {id: 2}, score :400 },
-    {game: {id: 2} , player: {id: 3}, score :700 },
-    {game: {id: 3} , player: {id: 1}, score :600 },
-  ],
+  sessions: [],
 
-  highscorePlayers : [
-    {game: {id: 0} , player: {id: 0}, score :500 },
-    {game: {id: 0} , player: {id: 2}, score :400 },
-    {game: {id: 2} , player: {id: 3}, score :700 },
-    {game: {id: 3} , player: {id: 1}, score :600 },
-  ],
+  highscorePlayers : [],
 
   profile : {name : ''}
 };
