@@ -34,7 +34,7 @@ defmodule JeopardyWeb.UserController do
     Poison.decode!(response.body)
   end
 
-  def verify_user(conn, %{user_id: user_id, amazon_user_id: auid}) do
+  def verify_user(conn, %{"user_id" => user_id, "amazon_user_id" => auid}) do
     %{amazon_uid: uuid} = Users.get_user(user_id)
     json(conn, %{verified: uuid === auid})
   end
