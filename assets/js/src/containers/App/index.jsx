@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { update } from "./actions";
 import { Route, Switch, withRouter } from "react-router-dom";
-import { selectPlaceholder } from "./selectors";
+import { selectPlaceholder, selectProfile } from "./selectors";
 
 class App extends React.Component {
   constructor(props) {
@@ -19,52 +19,55 @@ class App extends React.Component {
     const { channel } = props;
     const { updateState } = this;
 
-    console.log(channel);
+    channel.on("change", updateState);
+
     channel
       .join()
       .receive("ok", updateState)
       .receive("error", resp => {
         console.log("Unable to join", resp);
       });
-
-    channel.on("update", updateState);
-    channel.on("shout", resp => {
-      console.log("Message", resp);
-    });
   }
 
+  updateState = payload => this.props.update(payload);
+
   render() {
-    const { props: { placeholder } } = this;
+    const { props: { placeholder, profile } } = this;
 
     return (
       <div>
-        <Nav />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/games" component={GamesList} />
-          <Route
-            exact
-            path="/users/:userId"
-            render={({ match: { params: { userId } } }) => (
-              <User userId={userId} />
-            )}
-          />
-          <Route
-            exact
-            path="/games/:gameId"
-            render={({ match: { params: { gameId } } }) => (
-              <Game gameId={gameId} />
-            )}
-          />
-          <Route exact path="/privacy" component={Privacy} />
-        </Switch>
+        <Nav profile={profile} />
+        <div style={{ margin: "2em" }}>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/games" component={GamesList} />
+            <Route
+              exact
+              path="/users/:userId"
+              render={({ match: { params: { userId } } }) => (
+                <User userId={userId} />
+              )}
+            />
+            <Route
+              exact
+              path="/games/:gameId"
+              render={({ match: { params: { gameId } } }) => (
+                <Game gameId={gameId} />
+              )}
+            />
+            <Route exact path="/privacy" component={Privacy} />
+          </Switch>
+        </div>
+        {/*<button id="updateSession">CLICK ME TO CREATE A NEW SESSION!</button>*/}
       </div>
     );
   }
 }
 
-const mapStateToProps = null;
+const mapStateToProps = createStructuredSelector({
+  profile: selectProfile
+});
 
 const mapDispatchToProps = dispatch => ({
   update: payload => dispatch(update(payload))

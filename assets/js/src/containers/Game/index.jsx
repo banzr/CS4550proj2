@@ -8,15 +8,28 @@ class Game extends React.Component {
     const { props: { gameId, sessions } } = this;
     return (
       <div>
-        <Placeholder name={`Game ${gameId}`} />
-        <h3>Sessions</h3>
-        <ul>
-          {sessions.map(({ player: { id: playerId }, score }, index) => (
-            <li key={index}>
-              Player {playerId}, score {score}
-            </li>
-          ))}
-        </ul>
+        <h1 style={{ textAlign: "center" }}>Sessions for Game {gameId}</h1>
+        <table
+          className="table"
+          style={{ width: "55em", marginLeft: "15%", marginTop: "1%" }}
+        >
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Player</th>
+              <th scope="col">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sessions.map(({ player: { id: playerId }, score }, index) => (
+              <tr key={index}>
+                <th scope="row">{index}</th>
+                <td>Player {playerId}</td>
+                <td>{score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }

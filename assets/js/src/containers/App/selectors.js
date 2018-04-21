@@ -8,3 +8,8 @@ export const selectSessions = createSelector(
   selectApp,
   appState => appState.sessions
 );
+
+export const selectProfile = createSelector(
+  selectApp,
+  appState => appState.profile
+);

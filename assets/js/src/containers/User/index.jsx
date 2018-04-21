@@ -2,65 +2,64 @@ import React from "react";
 import Placeholder from "../../components/Placeholder";
 import api from "../../utils/api";
 import { connect } from "react-redux";
-import { selectUserSessions, selectLoaded, selectProfile } from "./selectors";
+import { selectUserSessions } from "./selectors";
+import { selectProfile } from "../App/selectors";
 import { selectToken } from "../Login/selectors";
 import { setLoaded, setProfile } from "./actions";
 
 class User extends React.Component {
   componentDidMount = () => {
-    const { onProfileLoad, token, userId, onLoad } = this.props;
-    if (!token) {
-      onLoad(true);
-      return;
-    }
+    const { onProfileLoad, token, userId } = this.props;
 
     api.getProfile(userId, token, profile => {
       onProfileLoad(profile);
-      onLoad(true);
     });
   };
 
   render() {
-    const { props: { profile, userId, sessions, loaded } } = this;
+    const { props: { profile, userId, sessions } } = this;
 
     if (!profile) {
-      return (
-        <div>
-          {loaded
-            ? "Must be logged in as this user to view their profile"
-            : "Loading..."}
-        </div>
-      );
+      return <div>Must be logged in as this user to view their profile</div>;
     }
-
-    const { name } = profile;
 
     return (
       <div>
-        <Placeholder name={`Player: ${name}`} />
-        <h3>Sessions</h3>
-        <ul>
-          {sessions.map(({ game: { id: gameId }, score }, index) => (
-            <li key={index}>
-              Game {gameId}, score {score}
-            </li>
-          ))}
-        </ul>
+        <h1 style={{ textAlign: "center" }}>Sessions for {profile.name}</h1>
+        <table
+          className="table"
+          style={{ width: "55em", marginLeft: "15%", marginTop: "1%" }}
+        >
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Player</th>
+              <th scope="col">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sessions.map(({ game: { id: gameId }, score }, index) => (
+              <tr key={index}>
+                <th scope="row">{index}</th>
+                <td>Game {gameId}</td>
+                <td>{score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }
 }
 
 const mapStateToProps = (state, { userId }) => ({
-  loaded: selectLoaded(state),
   sessions: selectUserSessions(state, userId),
   profile: selectProfile(state),
   token: selectToken(state)
 });
 
 const mapDispatchToProps = dispatch => ({
-  onProfileLoad: profile => dispatch(setProfile(profile)),
-  onLoad: loaded => dispatch(setLoaded(loaded))
+  onProfileLoad: profile => dispatch(setProfile(profile))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);

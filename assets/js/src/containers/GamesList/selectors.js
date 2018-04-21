@@ -4,12 +4,13 @@ import { selectSessions } from "../App/selectors";
 export const selectGames = createSelector(
   selectSessions,
   // transform sessions into { [game_id]: { highscore, players }} for each game
-  sessions =>
-    sessions.reduce((games, session) => {
+  sessions => {
+    return sessions.reduce((games, session) => {
       const { game: { id: gameId } } = session;
       games[gameId] = getGameFromSession(games[gameId], session);
       return games;
-    }, {})
+    }, {});
+  }
 );
 
 const getGameFromSession = (game, session) => {
@@ -29,3 +30,13 @@ const getGameFromSession = (game, session) => {
       : [...players, player]
   };
 };
+
+// get the top highest scoring sessions from all games
+const HIGH_SCORES_COUNT = 3; // how many high scores to show
+export const selectHighscoreSessions = createSelector(
+  selectSessions,
+  sessions => {
+    const sorted = _.sortBy(sessions, "score").reverse();
+    return _.first(sorted, HIGH_SCORES_COUNT);
+  }
+);

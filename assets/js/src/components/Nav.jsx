@@ -2,13 +2,25 @@ import React from "react";
 import { NavItem, Navbar } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
-export default function Nav() {
-  // TODO: stop using bootstrap for everything
+export default function Nav({ profile }) {
+  let session_info;
+  if (!profile) {
+    session_info = (
+      <NavItem>
+        <NavLink exact to="/login" className="nav-link rightLink">
+          Login
+        </NavLink>
+      </NavItem>
+    );
+  } else {
+    session_info = <h5 style={{ color: "white" }}>Welcome, {profile.name}</h5>;
+  }
+  
   return (
     <nav className="navbar navbar-dark bg-dark navbar-expand colorNav navUl">
       <a className="navbar-brand">
         <img
-          src="/images/logo.png"
+          src="images/logo.png"
           width="30"
           height="30"
           className="d-inline-block align-top"
@@ -32,13 +44,7 @@ export default function Nav() {
           </NavLink>
         </NavItem>
       </ul>
-      <ul className="navbar-nav ml-auto">
-        <NavItem>
-          <NavLink exact to="/login" className="nav-link rightLink">
-            Login
-          </NavLink>
-        </NavItem>
-      </ul>
+      <ul className="navbar-nav ml-auto">{session_info}</ul>
     </nav>
   );
 }

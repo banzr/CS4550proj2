@@ -25,9 +25,9 @@ defmodule JeopardyWeb.Router do
     get("/users/:id", PageController, :index)
     get("/login", PageController, :index)
     get("/privacy", PageController, :index)
-
     post("/sessions", SessionController, :login)
-    delete("/sessions", SessionContrller, :logout)
+    delete("/sessions", SessionController, :logout)
+
     post("/alexa_post", GameController, :alexa)
     post("/new", GameController, :new)
   end
@@ -37,6 +37,7 @@ defmodule JeopardyWeb.Router do
     pipe_through(:api)
     resources("/users", UserController, except: [:new, :edit])
     resources("/games", GameController)
+    resources("/sessions", SessionController)
     resources("/categories", CategoryController)
     resources("/category_items", CategoryItemController)
     resources("/clues", ClueController)

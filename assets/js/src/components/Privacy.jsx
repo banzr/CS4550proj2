@@ -3,7 +3,7 @@ import React from "react";
 export default function Privacy() {
   return (
     <div>
-      <h1>Privacy Policy</h1>
+      <h1 style={{textAlign: 'center', marginBottom: '1em'}}>Privacy Policy</h1>
 
       <p>Effective date: April 10, 2018</p>
 
