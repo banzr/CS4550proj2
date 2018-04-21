@@ -48,8 +48,8 @@ defmodule JeopardyWeb.GameController do
       })
     else
       token = session["user"]["accessToken"]
-      %{"user_id" => userId} = UserController.retrieve_profile(token)
-
+      uProfile = UserController.retrieve_profile(token)
+      userId = uProfile["user_id"]
       user = Users.get_or_create_user(userId)
       uSession = nil
 
