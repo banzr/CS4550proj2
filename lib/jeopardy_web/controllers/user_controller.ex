@@ -42,6 +42,8 @@ defmodule JeopardyWeb.UserController do
       else
 
       IO.puts("User ID does NOT match")
+      IO.puts(uuid)
+      IO.puts(amzn_usr_id)
         #Return failure
         json(conn, %{profile: %{}})
       end
