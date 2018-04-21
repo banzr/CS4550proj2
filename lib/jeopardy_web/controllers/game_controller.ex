@@ -26,7 +26,30 @@ defmodule JeopardyWeb.GameController do
 #    IO.puts("[DEBUG] Session:" <> answer["session"])
     session = answer["session"]
     request = answer["request"]
-    userId = session["user"]["userId"]
+    if (session["user"]["accessToken"] == nil) do
+      conn
+      |> put_status(:ok)
+      |> json(%{
+  version: "1.0",
+  response: %{
+    outputSpeech: %{
+      type: "PlainText",
+      text: " Please use the companion app to authenticate on Amazon to start using this skill"
+    },
+    card: %{
+      type: "LinkAccount"
+    },
+    shouldEndSession: false
+  },
+  sessionAttributes: %{}
+})
+    else
+    token = session["user"]["accessToken"]
+    IO.puts("TOKEN RECEIVED #{Kernel.inspect(token)}")
+    url_1 = "https://api.amazon.com/auth/o2/tokeninfo?access_token=" <> token
+    { :ok, req1 } = HTTPoison.get(url_1, [], [ ssl: [{:versions, [:'tlsv1.2']}] ])
+    profile = Poison.decode!(req1.body)
+    userId = profile["user_id"]
     user = Users.get_or_create_user(userId)
     uSession = nil
 
@@ -84,6 +107,7 @@ defmodule JeopardyWeb.GameController do
       end
     else
       parse_answer(conn, data, user)
+    end
     end
   end
 
