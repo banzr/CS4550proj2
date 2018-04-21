@@ -11,41 +11,29 @@ defmodule JeopardyWeb.UserController do
     render(conn, "index.json", users: users)
   end
 
-  def get_profile(conn, %{"token" => token, "user_id" => user_id}) do
+  def get_profile(conn, %{"token" => token}) do
+    if valid_token?(token) do
+      profile_url = "https://api.amazon.com/user/profile"
+      headers = [Authorization: "Bearer #{token}"]
+      {:ok, response} = HTTPoison.get(profile_url, headers, ssl: [{:versions, [:"tlsv1.2"]}])
 
-    IO.puts("token: ")
-    IO.puts(token)
-
-    url_1 = "https://api.amazon.com/auth/o2/tokeninfo?access_token=" <> token
-    { :ok, req1 } = HTTPoison.get(url_1, [], [ ssl: [{:versions, [:'tlsv1.2']}] ])
-    %{ "aud" => aud } = Poison.decode!(req1.body)
-
-    if (aud ==  "amzn1.application-oa2-client.7c7d7da492884579abc147dc6039141a") do
-
-      url_2 = "https://api.amazon.com/user/profile"
-      headers = ["Authorization": "Bearer #{token}"]
-      { :ok, req2 } = HTTPoison.get(url_2, headers, [ ssl: [{:versions, [:'tlsv1.2']}] ])
-      profile = Poison.decode!(req2.body)
-
-      IO.puts("user_id: ")
-      IO.puts(user_id)
-
-      %{ amazon_uid: uuid } = Users.get_user(user_id)
-      %{ "user_id" => amzn_usr_id } = profile
-
-      if uuid === amzn_usr_id do
-
-        #Return success
-        send_resp(conn, 200, %{profile: profile})
-
-      else
-        #Return failure
-        send_resp(conn, 200, %{profile: %{}})
-      end
+      json(conn, %{profile: Poison.decode!(response.body)})
     else
-      #Return failure
-      send_resp(conn, 200, %{profile: %{}})
+      json(conn, %{})
     end
+  end
+
+  def valid_token?(token) do
+    our_app_id = "amzn1.application-oa2-client.7c7d7da492884579abc147dc6039141a"
+    auth_url = "https://api.amazon.com/auth/o2/tokeninfo?access_token=" <> token
+    {:ok, response} = HTTPoison.get(auth_url, [], ssl: [{:versions, [:"tlsv1.2"]}])
+    %{"aud" => app_id} = Poison.decode!(response.body)
+    our_app_id === app_id
+  end
+
+  def verify_user(conn, %{user_id: user_id, amazon_user_id: auid}) do
+    %{amazon_uid: uuid} = Users.get_user(user_id)
+    json(conn, %{verified: uuid === auid})
   end
 
   def create(conn, %{"user" => user_params}) do

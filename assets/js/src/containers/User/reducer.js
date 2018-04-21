@@ -1,10 +1,11 @@
 import { createReducer } from "../../utils/redux";
-import { SET_LOADED, SET_PROFILE } from "./actions";
+import { SET_VERIFIED } from "./actions";
 
-// placeholder state and actions for example purposes, to be filled in later
-const initialState = {};
+const initialState = {
+  // whether the current logged-in user can view this user's profile
+  verified: false
+};
 
 export default createReducer(initialState, {
-  [SET_LOADED]: (state, { loaded }) => ({ ...state, loaded }),
-  [SET_PROFILE]: (state, { profile }) => ({ ...state, profile })
+  [SET_VERIFIED]: (state, { verified }) => ({ ...state, verified })
 });

@@ -7,11 +7,32 @@ const doPost = ({ data, endpoint, ...rest }) =>
     ...rest
   });
 
-const getProfile = (userId, token, onSuccess) =>
+const getProfile = (token, onSuccess) =>
   doPost({
-    data: { token, user_id: userId },
+    data: { token },
     endpoint: "profile",
     success: ({ profile }) => onSuccess(profile)
   });
 
-export default { getProfile };
+const verifyUser = (userId, amazonUserId, onVerify) => {
+  doPost({
+    data: { user_id: userId, amazon_user_id: amazonUserId },
+    endpoint: "verify",
+    success: ({ verified }) => onVerify(verified)
+  });
+};
+
+const getAccessToken = onLogin => {
+  if (!amazon) return;
+
+  amazon.Login.authorize({ scope: "profile" }, ({ access_token, error }) => {
+    if (error) {
+      console.log("oauth error " + error);
+      return;
+    }
+
+    onLogin(access_token);
+  });
+};
+
+export default { getProfile, getAccessToken };

@@ -1,28 +1,25 @@
 import React from "react";
 import Placeholder from "../../components/Placeholder";
-import api from "../../utils/oauthAPI";
+import oauthAPI from "../../utils/oauthAPI";
 import { connect } from "react-redux";
 import { selectUserSessions } from "./selectors";
 import { selectProfile } from "../App/selectors";
 import { selectToken } from "../Login/selectors";
-import { setLoaded, setProfile } from "./actions";
+import { setVerified } from "./actions";
 
 class User extends React.Component {
   componentDidMount = () => {
-    const { onProfileLoad, token, userId } = this.props;
+    const { props: { profile, userId, onVerify } } = this;
+    if (!profile) return;
 
-    if (!token) return;
-
-    api.getProfile(userId, token, profile => {
-      onProfileLoad(profile);
-    });
+    oauthAPI.verifyUser(userId, profile.user_id, onVerify);
   };
 
   render() {
-    const { props: { profile, userId, sessions } } = this;
+    const { props: { profile, userId, sessions, verified } } = this;
 
-    if (!profile) {
-      return <div>Must be logged in as this user to view their profile</div>;
+    if (!verified) {
+      return <div>Must be logged in as this user to view their profile.</div>;
     }
 
     return (
@@ -61,7 +58,7 @@ const mapStateToProps = (state, { userId }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onProfileLoad: profile => dispatch(setProfile(profile))
+  onVerify: verified => dispatch(setVerified(verified))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);

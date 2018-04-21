@@ -9,9 +9,10 @@ import User from "../../containers/User/index";
 import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { update } from "./actions";
+import { setProfile, update } from "./actions";
 import { Route, Switch, withRouter } from "react-router-dom";
 import { selectPlaceholder, selectProfile } from "./selectors";
+import { selectToken } from "../Login/selectors";
 
 class App extends React.Component {
   constructor(props) {
@@ -30,6 +31,22 @@ class App extends React.Component {
   }
 
   updateState = payload => this.props.update(payload);
+
+  componentDidUpdate = () => {
+    const { props: { token, profile }, retrieveProfileInfo } = this;
+
+    if (token && !profile) {
+      retrieveProfileInfo();
+    }
+  };
+
+  retrieveProfileInfo = () => {
+    const { onProfileLoad, token } = this.props;
+
+    if (!token) return;
+
+    api.getProfile(token, profile => onProfileLoad(profile));
+  };
 
   render() {
     const { props: { placeholder, profile } } = this;
@@ -66,10 +83,12 @@ class App extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  profile: selectProfile
+  profile: selectProfile,
+  token: selectToken
 });
 
 const mapDispatchToProps = dispatch => ({
+  onProfileLoad: profile => dispatch(setProfile(profile)),
   update: payload => dispatch(update(payload))
 });
 
