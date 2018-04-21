@@ -6,6 +6,7 @@ import Privacy from "../../components/Privacy";
 import Login from "../../containers/Login/index";
 import Nav from "../../components/Nav";
 import User from "../../containers/User/index";
+import oauthAPI from '../../utils/oauthAPI'
 import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -45,7 +46,7 @@ class App extends React.Component {
 
     if (!token) return;
 
-    api.getProfile(token, profile => onProfileLoad(profile));
+    oauthAPI.getProfile(token, profile => onProfileLoad(profile));
   };
 
   render() {
