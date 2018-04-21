@@ -11,6 +11,10 @@ defmodule JeopardyWeb.UserController do
     render(conn, "index.json", users: users)
   end
 
+  def get_token(conn, data) do
+    send_resp(conn, 200, "")
+  end
+
   def get_profile(conn, %{"token" => token, "user_id" => user_id}) do
 
     IO.puts("token: ")
