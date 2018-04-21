@@ -20,7 +20,7 @@ export default function Nav({ profile }) {
     <nav className="navbar navbar-dark bg-dark navbar-expand colorNav navUl">
       <a className="navbar-brand">
         <img
-          src="images/logo.png"
+          src="/images/logo.png"
           width="30"
           height="30"
           className="d-inline-block align-top"
