@@ -36,15 +36,15 @@ defmodule JeopardyWeb.UserController do
       if uuid === amzn_usr_id do
 
         #Return success
-        send_resp(conn, 200, %{profile: profile})
+        json(conn, %{profile: profile})
 
       else
         #Return failure
-        send_resp(conn, 200, %{profile: %{}})
+        json(conn, %{profile: %{}})
       end
     else
       #Return failure
-      send_resp(conn, 200, %{profile: %{}})
+      json(conn, %{profile: %{}})
     end
   end
 
