@@ -57,31 +57,32 @@ defmodule JeopardyWeb.GameController do
         uSession = Sessions.get_session!(user.unfinished_id)
       end
 
-      type = request["type"]
-      intent = request["intent"]
-      IO.puts("#{Kernel.inspect(intent)}")
-      #    userId = session["user"]["userId"]
-      #    accessToken = session["user"]["accessToken"]
-      #    attributes = session["attributes"]
-      #    answered_clues = attributes["clues"]
-      #    game_id = attributes["game_id"]
-      #    clue_list = attributes["questions"]
-      #    user_input = answer["context"]
-      # if new session, get user and new game
-      if type == "LaunchRequest" ||
-           (type == "IntentRequest" && request["intent"]["name"] == "newGame") do
-        if uSession do
-          conn
-          |> put_status(:ok)
-          |> json(%{
-            version: "1.0",
-            sessionAttributes: %{
-              clues: [],
-              categories: [],
-              answer: "",
-              score: 0,
-              numbered: [],
-              session_id: uSession.id
+    type = request["type"]
+    intent = request["intent"]
+    IO.puts("#{Kernel.inspect(intent)}")
+    #    userId = session["user"]["userId"]
+    #    accessToken = session["user"]["accessToken"]
+    #    attributes = session["attributes"]
+    #    answered_clues = attributes["clues"]
+    #    game_id = attributes["game_id"]
+    #    clue_list = attributes["questions"]
+    #    user_input = answer["context"]
+    # if new session, get user and new game
+    cond do
+       type == "LaunchRequest" ||
+         (type == "IntentRequest" && request["intent"]["name"] == "newGame") ->
+      if uSession do
+        conn
+        |> put_status(:ok)
+        |> json(%{
+          version: "1.0",
+          sessionAttributes: %{
+            clues: [],
+            categories: [],
+            answer: "",
+            score: 0,
+            numbered: [],
+            session_id: uSession.id
             },
             response: %{
               outputSpeech: %{
@@ -105,9 +106,40 @@ defmodule JeopardyWeb.GameController do
         else
           create(conn, data, user)
         end
-      else
-        parse_answer(conn, data, user)
-      end
+    type == "IntentRequest" ->
+      parse_answer(conn, data, user)
+    type == "SessionEndedRequest" ->
+      IO.puts("SESSION EDNED CUZ TIMEDOUT")
+      conn
+      |> put_status(:ok)
+      |> json(%{
+         version: "1.0",
+         sessionAttributes: %{
+          },
+          response: %{
+            outputSpeech: %{
+              type: "PlainText",
+              text: "Sorry! You have been timed out by the server. Please try to restart the game."
+            },
+            card: %{
+              type: "Simple",
+              title: "Jeopary",
+              content: "Sorry! You have been timed out. Please try to restart ghe game"
+            },
+            reprompt: %{
+              outputSpeech: %{
+                type: "PlainText",
+                text: "Please try to restart the game"
+              }
+            },
+            shouldEndSession: true
+          }
+        })
+    true ->
+      conn
+      |> put_status(:ok)
+      |> json(%{})
+    end
     end
   end
 
@@ -618,6 +650,7 @@ defmodule JeopardyWeb.GameController do
 
         conn
         |> put_status(:not_found)
+        |> json(%{})
     end
   end
 
