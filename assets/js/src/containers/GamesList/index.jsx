@@ -9,6 +9,7 @@ import { selectGames, selectHighscoreSessions } from "./selectors";
 class GamesList extends React.Component {
   renderGames = () => {
     const { games } = this.props;
+
     return (
       <div className="col" style={{ width: "100em", marginLeft: "10em" }}>
         <div className="row">
