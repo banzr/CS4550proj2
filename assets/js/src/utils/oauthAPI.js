@@ -11,9 +11,9 @@ const getProfile = (token, onSuccess) =>
   doPost({
     data: { token },
     endpoint: "profile",
-    success: (data) =>{
-        console.log(data);
-        onSuccess(data.profile);
+    success: data => {
+      console.log(data);
+      onSuccess(data.profile);
     }
   });
 
@@ -38,4 +38,4 @@ const getAccessToken = onLogin => {
   });
 };
 
-export default { getProfile, getAccessToken };
+export default { getAccessToken, getProfile, verifyUser };
