@@ -20,7 +20,7 @@ defmodule JeopardyWeb.UserController do
     { :ok, req1 } = HTTPoison.get(url_1, [], [ ssl: [{:versions, [:'tlsv1.2']}] ])
     %{ "aud" => aud } = Poison.decode!(req1.body)
 
-    if (aud ==  "amzn1.application-oa2-client.7c7d7da492884579abc147dc6039141a") do
+    if (aud ==  "amzn1.application-oa2-client.fa05aae1244646cea1fe24494d3a8a04") do
 
       url_2 = "https://api.amazon.com/user/profile"
       headers = ["Authorization": "Bearer #{token}"]
