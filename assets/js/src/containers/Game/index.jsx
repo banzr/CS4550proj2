@@ -43,7 +43,7 @@ class Game extends React.Component {
                 <h1 style={{ textAlign: "center" }}>Sessions for Game {gameId}</h1>
                 <table
                   className="table"
-                  style={{ width: "85em", marginLeft: "5%", marginTop: "1%" }}
+                  style={{ width: "65em", marginLeft: "10%", marginTop: "1%" }}
                   >
                   <thead>
                     <tr>
@@ -59,11 +59,11 @@ class Game extends React.Component {
                     {sessions.map(({ player: { id: playerId }, score }, index) => (
                       <tr key={index}>
                         <th scope="row">{index}</th>
-                        <td>Player {playerId}</td>
-                        <td>{score}</td>
-                        <td>{questions[index]}</td>
-                        <td>{correctAnswer[index]}</td>
-                        <td>{answer[index]}</td>
+                        <td >Player {playerId}</td>
+                        <td >{score}</td>
+                        <td style={{width: '250px'}} class="col-md-3">{questions[index]}</td>
+                        <td >{correctAnswer[index]}</td>
+                        <td >{answer[index]}</td>
                         </tr>
                       ))}
                     </tbody>

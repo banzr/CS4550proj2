@@ -8,12 +8,44 @@ import { Link } from "react-router-dom";
 class GamesList extends React.Component {
   render() {
     const { props: { games, highscoreSessions } } = this;
+    let highscore;
+    let note;
+    if(highscoreSessions.length>0){
+      highscore =highscoreSessions.map(({ game, player, score }, index) => (
+                        <div key={index} className="card-body">
+                          <h5 className="card-title"> Player {player.id}</h5>
+                          <p style={{ float: "right" }}>Game {game.id}</p>
+                          <h4>{score}</h4>
+                          <hr />
+                        </div>
+                      ))
+    }
+    else {
+      highscore = <h5 style={{textAlign:'center'}}>Highscore List</h5>
+    }
+    if(highscoreSessions.length>0){
+      note=<p></p>
+    }
+    else {
+      note = <h2 style={{textAlign:'center'}}>The Games List</h2>
+    }
     return (
       <div style={{ margin: "1em" }}>
         <h1 style={{ textAlign: "center", marginBottom: "0.5em" }}>Games</h1>
         <div className="row">
-          <div className="col" style={{ width: "100em", marginLeft: "10em" }}>
+          <div className="col" style={{ width: "100em", marginLeft: "5em" }}>
             <div className="row">
+
+              <div className="card"   style={{
+                  margin: "1em",
+                  border: "1px solid black",
+                  width: "auto",
+                  height: "auto",
+                  paddingLeft: '8em',
+                  paddingRight: '8em'
+
+                }}>
+                {note}
               {Object.entries(games).map(
                 ([id, { highscore, players }], index) => (
                   <div
@@ -51,26 +83,20 @@ class GamesList extends React.Component {
                   </div>
                 )
               )}
+              </div>
             </div>
           </div>
-          <div className="col" style={{ marginLeft: "10em" }}>
+          <div className="col" style={{ marginTop: '1em',marginLeft: "10em" }}>
             <div className="card" style={{ width: "30em", height: "auto" }}>
               <div
                 className="card-header text-white text-center"
                 style={{ background: "grey" }}
               >
                 {" "}
-                <h5>Husky Jeopardy Board</h5>
+                <h5>Highscore</h5>
               </div>
               <div className="card-body">
-                {highscoreSessions.map(({ game, player, score }, index) => (
-                  <div key={index} className="card-body">
-                    <h5 className="card-title"> Player {player.id}</h5>
-                    <p style={{ float: "right" }}>Game {game.id}</p>
-                    <h4>{score}</h4>
-                    <hr />
-                  </div>
-                ))}
+                {highscore}
               </div>
             </div>
           </div>
