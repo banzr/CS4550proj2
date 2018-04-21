@@ -76,7 +76,6 @@ class App extends React.Component {
             <Route exact path="/privacy" component={Privacy} />
           </Switch>
         </div>
-        {/*<button id="updateSession">CLICK ME TO CREATE A NEW SESSION!</button>*/}
       </div>
     );
   }
