@@ -2,7 +2,7 @@ import React from "react";
 import Placeholder from "../../components/Placeholder";
 import oauthAPI from "../../utils/oauthAPI";
 import { connect } from "react-redux";
-import { selectUserSessions } from "./selectors";
+import { selectUserSessions, selectVerified } from "./selectors";
 import { selectProfile } from "../App/selectors";
 import { selectToken } from "../Login/selectors";
 import { setVerified } from "./actions";
@@ -54,7 +54,8 @@ class User extends React.Component {
 const mapStateToProps = (state, { userId }) => ({
   sessions: selectUserSessions(state, userId),
   profile: selectProfile(state),
-  token: selectToken(state)
+  token: selectToken(state),
+  verified: selectVerified(state)
 });
 
 const mapDispatchToProps = dispatch => ({
