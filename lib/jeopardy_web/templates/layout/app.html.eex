@@ -7,17 +7,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Play Jeopardy!</title>
+    <title>Husky Jeopardy!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body class="bg">
-     <div id="amazon-root"></div>
+    <div id="amazon-root"></div>
     <script type="text/javascript">
-      // Amazon login stuff
+      // Load the Amazon SDK, taken from the docs:
+      // https://developer.amazon.com/docs/login-with-amazon/install-sdk-javascript.html
       window.onAmazonLoginReady = function() {
-
-        console.log("Amazon SDK is loaded");
         amazon.Login.setClientId('amzn1.application-oa2-client.fa05aae1244646cea1fe24494d3a8a04');
       };
       (function(d) {
@@ -29,18 +28,9 @@
      </script>
 
     <div>
-      <%= if get_flash(@conn, :info) do %>
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <% end %>
-      <%= if get_flash(@conn, :error) do %>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-      <% end %>
-
-        <%= render @view_module, @view_template, assigns %>
-
-
-    </div> <!-- /container -->
+      <%# render the view  %>
+      <%= render @view_module, @view_template, assigns %>
+    </div>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
-    <%# <script id="amazon-sdk" async="" src="https://api-cdn.amazon.com/sdk/login1.js"></script> %>
   </body>
 </html>

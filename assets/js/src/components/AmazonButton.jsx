@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AmazonButton({ onClick }) {
   return (
-    <button onClick={onClick}>
+    <button onClick={onClick} style={{ margin: "0 auto" }}>
       <img
         border="0"
         alt="Login with Amazon"

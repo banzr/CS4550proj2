@@ -1,6 +1,6 @@
 import React from "react";
-import Placeholder from "../../components/Placeholder";
 import AmazonButton from "../../components/AmazonButton";
+import Heading from "../../components/Heading";
 import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -21,12 +21,12 @@ class Login extends React.Component {
       if (profile) {
         return <h3>You are logged in as {profile.name}.</h3>;
       }
-      return <h3>Logging in...</h3>
+      return <h3>Logging in...</h3>;
     }
 
     return (
-      <div>
-        <h1>Login</h1>
+      <div style={{ textAlign: "center" }}>
+        <Heading text="Login" />
         <AmazonButton onClick={this.handleLoginClick} />
       </div>
     );

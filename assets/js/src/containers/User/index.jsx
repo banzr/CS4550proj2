@@ -1,6 +1,6 @@
 import React from "react";
-import Placeholder from "../../components/Placeholder";
 import oauthAPI from "../../utils/oauthAPI";
+import Heading from "../../components/Heading";
 import { connect } from "react-redux";
 import { selectUserSessions, selectVerified } from "./selectors";
 import { selectProfile } from "../App/selectors";
@@ -24,7 +24,7 @@ class User extends React.Component {
 
     return (
       <div>
-        <h1 style={{ textAlign: "center" }}>Sessions for {profile.name}</h1>
+        <Heading text={`Sessions for ${profile.name}`} />
         <table
           className="table"
           style={{ width: "55em", marginLeft: "15%", marginTop: "1%" }}
