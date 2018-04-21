@@ -6,5 +6,5 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [UPDATE]: (state, { sessions = [] }) => ({ ...state, sessions })
+  [UPDATE]: (state, { payload: { sessions = [] } }) => ({ ...state, sessions })
 });
