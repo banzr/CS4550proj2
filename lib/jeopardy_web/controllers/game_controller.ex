@@ -8,7 +8,7 @@ defmodule JeopardyWeb.GameController do
   alias Jeopardy.Users
   alias Jeopardy.Sessions
   alias Jeopardy.Sessions.Session
-
+  alias JeopardyWeb.GameChannel
   action_fallback(JeopardyWeb.FallbackController)
 
   def index(conn, _params) do
@@ -105,6 +105,7 @@ defmodule JeopardyWeb.GameController do
       }
 
       with {:ok, %Session{} = session} <- Sessions.create_session(session_params) do
+        GameChannel.broadcast_change()
         numbered_categories_list =
           Enum.join(
             Enum.map([1, 2, 3, 4, 5], fn n ->
@@ -617,6 +618,7 @@ defmodule JeopardyWeb.GameController do
     }
 
     Sessions.update_session(session, session_params)
+    GameChannel.broadcast_change()
 
     if s == 0 do
       result = "wrong"
