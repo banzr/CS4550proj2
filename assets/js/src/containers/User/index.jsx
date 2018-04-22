@@ -12,43 +12,55 @@ class User extends React.Component {
     const { props: { profile, userId, onVerify } } = this;
     if (!profile) return;
 
-    oauthAPI.verifyUser(userId, profile.user_id, onVerify);
+     oauthAPI.verifyUser(userId, profile.user_id, onVerify);
   };
 
   render() {
     const { props: { profile, userId, sessions, verified } } = this;
 
-    if (!verified) {
-      return <div>Must be logged in as this user to view their profile.</div>;
-    }
+     if (!verified) {
+       return <div>Must be logged in as this user to view their profile.</div>;
+     }
 
     return (
       <div>
         <Heading text={`Sessions for ${profile.name}`} />
-        <table
-          className="table"
-          style={{ width: "55em", marginLeft: "15%", marginTop: "1%" }}
-        >
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Player</th>
-              <th scope="col">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sessions.map(({ game: { id: gameId }, score }, index) => (
-              <tr key={index}>
-                <th scope="row">{index}</th>
-                <td>Game {gameId}</td>
-                <td>{score}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <div className="row">
+          {sessions.map(({ game: { id: gameId }, score }, index) => (
+            <div
+              className="card"
+              style={{
+                margin: "2%",
+                marginLeft :'5%',
+                border: "1px solid black",
+                width: "40%"
+              }} key={index}
+              >
+              <div
+                className="card-header text-white text-center"
+                style={{ background: "light-grey" }}
+                >
+                <h5 style={{ color: "black" }}>
+                  Game {gameId}
+                </h5>
+              </div>
+
+              <div className="card-body" style={{ width: "100%" }}>
+                <div className="card-text">
+                  <div className="row">
+                    <div className="col"><h6>Score : </h6></div>
+                    <div className="col">{score}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        )}
       </div>
-    );
-  }
+    </div>
+  );
+}
 }
 
 const mapStateToProps = (state, { userId }) => ({

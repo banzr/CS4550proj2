@@ -8,15 +8,13 @@ font-size: 20px;
 }
 
 .bg{
-  width: inherit;
-  height: inherit;
+  width: auto;
+  height: auto;
+  background-size: cover;
   background: linear-gradient(to right, white, rgba(255,255,255,0), rgba(248,248,248,0) ,rgba(245,245,245, 1), rgba(232,232,232, 1) ,rgba(220,220,220 ,1));
 }
 
-.card {
-  width: 500px;
-  height: 250px;
-}
+
 
 .mainDiv{
   background-color: #64485c;
@@ -28,6 +26,7 @@ font-size: 20px;
   opacity: 0.7;
 
 }
+
 
 .cardBottom{
   margin: 10px;
@@ -45,9 +44,6 @@ position: relative;
   position: absolute;
  bottom: 5px;
 
- .bgColor{
-   background-color: blue;
- }
 
 }
 
@@ -93,15 +89,10 @@ position: relative;
 }
 
 .games-card {
-  margin: 1em;
+  margin: 1%;
   border: 1px solid black;
-  width: auto;
-  height: auto;
-  padding-left: 8em;
-  padding-right: 8em;
-}
-
-.amzn-login {
-  width: 312px;
-  height: 64px;
+  width: 100%;
+  height: 100%;
+  padding-left: 2%;
+  padding-right: 2%;
 }
