@@ -62,6 +62,7 @@ position: relative;
 
 .jeo-instr-box {
   flex-flow: row wrap;
+  max-width: 100%;
 }
 
 .jeo-link {
@@ -74,6 +75,7 @@ position: relative;
 
 .card-img-box {
   width: 50%;
+  vertical-align: middle;
 }
 
 .card-body {
@@ -87,6 +89,9 @@ position: relative;
 .pill-img {
   height: 2.5em;
   width: 4em;
+}
+
+
 
 .games-card {
   margin: 1em;
