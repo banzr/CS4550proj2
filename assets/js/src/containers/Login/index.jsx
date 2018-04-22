@@ -38,6 +38,7 @@ const mapStateToProps = createStructuredSelector({
   profile: selectProfile
 });
 
+
 const mapDispatchToProps = dispatch => ({
   handleLogin: onLogin => dispatch(login(onLogin)),
   onLogin: token => dispatch(setToken(token))

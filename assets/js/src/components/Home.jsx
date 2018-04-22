@@ -3,6 +3,7 @@ import React from "react";
 import { Jumbotron, Card, CardBody, CardText, CardTitle, CardSubtitle, CardImg, ListGroup, ListGroupItem, Badge }
     from 'reactstrap';
 
+// Icons from https://www.shareicon.net/
 export default function Home() {
     return (
         <div className="center">
@@ -13,7 +14,7 @@ export default function Home() {
                     University students.</p>
             </Jumbotron>
 
-            <div className="d-flex jeo-instr-box">
+            <div className="d-inline-flex jeo-instr-box">
 
                 <Card className={"card flex-md-row mb-4 box-shadow jeo-instr"}>
                     <CardBody className={"card-body d-flex flex-column align-items-start"}>
@@ -89,10 +90,7 @@ export default function Home() {
                     <ListGroupItem>4. Login to our website with your Amazon credentials.</ListGroupItem>
                     <ListGroupItem>5. Review and compare your scores.</ListGroupItem>
                 </ListGroup>
-
             </div>
-
-
 
         </div>
     );

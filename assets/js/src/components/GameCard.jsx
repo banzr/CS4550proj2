@@ -1,16 +1,18 @@
 import React from "react";
 import PlayerLink from "./PlayerLink";
 import GameLink from "./GameLink";
+import { ListGroup, ListGroupItem  } from 'reactstrap';
 
 export default function GameCard({ gameId, game: { highscore, players } }) {
   const renderedPlayers = (
-    <ul>
+    <ListGroup>
+        <ListGroupItem active>Players</ListGroupItem>
       {players.map(({ id: playerId }, index) => (
-        <li key={index}>
+        <ListGroupItem  key={index}>
           <PlayerLink id={playerId} />
-        </li>
+        </ListGroupItem >
       ))}
-    </ul>
+    </ListGroup>
   );
 
   const header = (
@@ -36,7 +38,7 @@ export default function GameCard({ gameId, game: { highscore, players } }) {
       {header}
       <div className="card-body" style={{ width: "15em" }}>
         <div className="card-text">
-          Players: {renderedPlayers}
+          {renderedPlayers}
           with high score {highscore}
         </div>
       </div>
