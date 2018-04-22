@@ -85,10 +85,13 @@ export default function Home() {
                                                              target="_blank" src="/images/android.svg" /></Badge>
                         </a>
                     </ListGroupItem>
-                    <ListGroupItem>2. Join our Beta</ListGroupItem>
-                    <ListGroupItem>3. Tell Alexa to play Husky Jeopardy!</ListGroupItem>
-                    <ListGroupItem>4. Login to our website with your Amazon credentials.</ListGroupItem>
-                    <ListGroupItem>5. Review and compare your scores.</ListGroupItem>
+                    <ListGroupItem tag="a" href="https://skills-store.amazon.com/deeplink/tvt/c88ad96e5e482
+                          207bebcc41d275a32566379857febacff5dea9473eb1cf6e45b2497b3b867409ca4a2dfe26ac9e531ec6
+                         bebdf3ecb9ea1579d79705ceec66b3d54e22ef6034b22ab91afd2311171255456465940024db2e3729948
+                      2ae708bf650c97bee1443fb2cab46f75d06cff52" target="_blank" action>2. Join our Beta</ListGroupItem>
+                    <ListGroupItem tag="a" href="#" action>3. Tell Alexa to play Husky Jeopardy!</ListGroupItem>
+                    <ListGroupItem tag="a" href="/login" action>4. Login to our website with your Amazon credentials.</ListGroupItem>
+                    <ListGroupItem disabled tag="a" href="#" action>5. Review and compare your scores.</ListGroupItem>
                 </ListGroup>
             </div>
 
