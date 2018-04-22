@@ -14,8 +14,6 @@ font-size: 20px;
   background: linear-gradient(to right, white, rgba(255,255,255,0), rgba(248,248,248,0) ,rgba(245,245,245, 1), rgba(232,232,232, 1) ,rgba(220,220,220 ,1));
 }
 
-
-
 .mainDiv{
   background-color: #64485c;
   color: white;
@@ -99,4 +97,9 @@ position: relative;
   height: 100%;
   padding-left: 2%;
   padding-right: 2%;
+}
+
+.amzn-login {
+  width: 312px;
+  height: 64px;
 }
