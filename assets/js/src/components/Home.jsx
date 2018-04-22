@@ -1,5 +1,7 @@
 import React from "react";
-import { Jumbotron, Card, CardBody, CardText, CardTitle, CardSubtitle, CardImg, ListGroup, ListGroupItem, Badge } from 'reactstrap';
+
+import { Jumbotron, Card, CardBody, CardText, CardTitle, CardSubtitle, CardImg, ListGroup, ListGroupItem, Badge }
+    from 'reactstrap';
 
 export default function Home() {
     return (
@@ -7,7 +9,8 @@ export default function Home() {
             <Jumbotron>
                 <h1 className="display-3" id={"banner-txt"}>Alexa, play Husky Jeopardy...</h1>
                 <hr />
-                <p className="lead">Husky Jeopardy is an Amazon Alexa Jeopardy game created by Northeastern University students.</p>
+                <p className="lead">Husky Jeopardy is an Amazon Alexa Jeopardy game created by Northeastern
+                    University students.</p>
             </Jumbotron>
 
             <div className="d-flex jeo-instr-box">
@@ -23,8 +26,8 @@ export default function Home() {
                       </span></a>
                         </CardSubtitle>
                         <CardText />
-                        <CardText className="mb-auto">Play jeopardy with thousands of possible trivia questions in various
-                            categories. Play on your way to work or at home with friends.</CardText>
+                        <CardText className="mb-auto">Play jeopardy with thousands of possible trivia questions in
+                            various categories. Play on your way to work or at home with friends.</CardText>
                     </CardBody>
                     <div className="card-img-box">
                         <CardImg className={"card-img-right flex-auto d-none d-lg-block"}
@@ -40,8 +43,8 @@ export default function Home() {
                   </span></a>
                         </CardSubtitle>
                         <CardText />
-                        <CardText className="mb-auto">Compete against other players for the top score and see your return
-                            player number on the board for all to see!</CardText>
+                        <CardText className="mb-auto">Compete against other players for the top score and see your
+                            return player number on the board for all to see!</CardText>
                     </CardBody>
                     <div className="card-img-box">
                         <CardImg className={"card-img-right flex-auto d-none d-lg-block"}
@@ -53,12 +56,13 @@ export default function Home() {
                     <CardBody className={"card-body d-flex flex-column align-items-start"}>
                         <CardTitle className="d-inline-block mb-2 text-primary">Learn</CardTitle>
                         <CardSubtitle className="mb-0 font-weight-bold">
-                            <a className="text-dark" href="http://jservice.io/" target="_blank"><span className="jeo-link">JService
+                            <a className="text-dark" href="http://jservice.io/" target="_blank">
+                                <span className="jeo-link">JService
               </span></a>
                         </CardSubtitle>
                         <CardText />
-                        <CardText className="mb-auto">Try your knowledge and have fun in the process. Husky Jeopardy tells
-                            you the answers to questions you get wrong.</CardText>
+                        <CardText className="mb-auto">Try your knowledge and have fun in the process. Husky
+                            Jeopardy tells you the answers to questions you get wrong.</CardText>
                     </CardBody>
                     <div className="card-img-box">
                         <CardImg className={"card-img-right flex-auto d-none d-lg-block"}
@@ -72,12 +76,12 @@ export default function Home() {
                         &nbsp;
                         <a href="https://itunes.apple.com/us/app/amazon-alexa/id944011620">
                             <Badge pill color="secondary"><img className="pill-img"
-                               target="_blank" src="/images/apple.svg" /></Badge>
+                                                               target="_blank" src="/images/apple.svg" /></Badge>
                         </a>
                         &nbsp;
                         <a href="https://play.google.com/store/apps/details?id=com.amazon.dee.app&hl=en_US">
                             <Badge pill color="success"><img className="pill-img"
-                               target="_blank" src="/images/android.svg" /></Badge>
+                                                             target="_blank" src="/images/android.svg" /></Badge>
                         </a>
                     </ListGroupItem>
                     <ListGroupItem>2. Join our Beta</ListGroupItem>

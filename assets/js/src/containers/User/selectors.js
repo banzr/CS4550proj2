@@ -7,3 +7,10 @@ export const selectUserSessions = createSelector(
   (sessions, userId) =>
     sessions.filter(({ player: { id: playerId } }) => playerId == userId)
 );
+
+export const selectUserState = state => state.user;
+
+export const selectVerified = createSelector(
+  selectUserState,
+  userState => userState.verified
+);

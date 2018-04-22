@@ -64,7 +64,6 @@ position: relative;
   flex-flow: row wrap;
 }
 
-
 .jeo-link {
   text-decoration: underline;
 }
@@ -89,4 +88,11 @@ position: relative;
   height: 2.5em;
   width: 4em;
 
+.games-card {
+  margin: 1em;
+  border: 1px solid black;
+  width: auto;
+  height: auto;
+  padding-left: 8em;
+  padding-right: 8em;
 }

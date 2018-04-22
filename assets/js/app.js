@@ -30,19 +30,4 @@ $(function() {
   const channel = socket.channel("game:lobby", window.gameName, {});
 
   render(root, channel);
-  // start :- This code block should be removed:
-  // used only to create session from UI to check channel functionality
-  // $("#updateSession").on("click", function(){
-  //   console.log("clicked !!!!!");
-  //   $.ajax("/api/v1/sessions", {
-  //     method: "post",
-  //     dataType: "json",
-  //     contentType: "application/json; charset=UTF-8",
-  //     data: JSON.stringify({ session:{ score: 500 , game_id: 1, user_id:1}}),
-  //     success: (resp) => {
-  //       console.log("success");
-  //     },
-  //   });
-  // })
-  //end
 });
