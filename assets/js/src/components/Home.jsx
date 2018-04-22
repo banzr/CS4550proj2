@@ -17,7 +17,7 @@ export default function Home() {
             <div className="d-inline-flex jeo-instr-box">
 
                 <Card className={"card flex-md-row mb-4 box-shadow jeo-instr"}>
-                    <CardBody className={"card-body d-flex flex-column align-items-start"}>
+                    <CardBody className={"card-body d-flex flex-column align-items-start card-instr"}>
                         <CardTitle className="d-inline-block mb-2 text-primary">Alexa</CardTitle>
                         <CardSubtitle className="mb-0 font-weight-bold">
                             <a className="text-dark" href="https://skills-store.amazon.com/deeplink/tvt/c88ad96e5e482
@@ -37,7 +37,7 @@ export default function Home() {
                 </Card>
 
                 <Card className={"card flex-md-row mb-4 box-shadow jeo-instr"}>
-                    <CardBody className={"card-body d-flex flex-column align-items-start"}>
+                    <CardBody className={"card-body d-flex flex-column align-items-start card-instr"}>
                         <CardTitle className="d-inline-block mb-2 text-primary">Compete</CardTitle>
                         <CardSubtitle className="mb-0 font-weight-bold">
                             <a className="text-dark" href="/login" target="_blank"><span className="jeo-link">Login
@@ -54,7 +54,7 @@ export default function Home() {
                 </Card>
 
                 <Card className={"card flex-md-row mb-4 box-shadow jeo-instr"}>
-                    <CardBody className={"card-body d-flex flex-column align-items-start"}>
+                    <CardBody className={"card-body d-flex flex-column align-items-start card-instr"}>
                         <CardTitle className="d-inline-block mb-2 text-primary">Learn</CardTitle>
                         <CardSubtitle className="mb-0 font-weight-bold">
                             <a className="text-dark" href="http://jservice.io/" target="_blank">
