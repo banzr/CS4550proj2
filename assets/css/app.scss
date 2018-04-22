@@ -15,6 +15,7 @@ font-size: 20px;
 }
 
 
+
 .mainDiv{
   background-color: #64485c;
   color: white;
@@ -44,6 +45,47 @@ position: relative;
  bottom: 5px;
 
 
+}
+
+#banner-txt {
+  font-style: italic;
+  font-family: "Playfair Display";
+}
+
+.jeo-instr {
+  margin: 1em;
+}
+
+.jeo-instr-box {
+  flex-flow: row wrap;
+  max-width: 100%;
+  justify-content: space-around;
+}
+
+.jeo-link {
+  text-decoration: underline;
+}
+
+.card-img {
+  width: 100%;
+}
+
+.card-img-box {
+  width: 50%;
+  vertical-align: middle;
+}
+
+.card-body {
+  max-width: 250px;
+}
+
+.instr-list {
+  width: 500px;
+}
+
+.pill-img {
+  height: 2.5em;
+  width: 4em;
 }
 
 .games-card {
