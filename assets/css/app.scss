@@ -14,7 +14,7 @@ font-size: 20px;
 }
 
 .card {
-  width: 250px;
+  width: 500px;
   height: 250px;
 }
 
@@ -48,5 +48,45 @@ position: relative;
  .bgColor{
    background-color: blue;
  }
+
+}
+
+#banner-txt {
+  font-style: italic;
+  font-family: "Playfair Display";
+}
+
+.jeo-instr {
+  margin: 1em;
+}
+
+.jeo-instr-box {
+  flex-flow: row wrap;
+}
+
+
+.jeo-link {
+  text-decoration: underline;
+}
+
+.card-img {
+  width: 100%;
+}
+
+.card-img-box {
+  width: 50%;
+}
+
+.card-body {
+  max-width: 250px;
+}
+
+.instr-list {
+  width: 500px;
+}
+
+.pill-img {
+  height: 2.5em;
+  width: 4em;
 
 }
