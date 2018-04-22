@@ -19,7 +19,7 @@ class GamesList extends React.Component {
     }
 
     return (
-      <div className="col" style={{ width: "100em", marginLeft: "5em" }}>
+      <div className="col" style={{ width: "120%", marginLeft:'2%' , marginRight: '2%' }}>
         <div className="row">
           <div className="card games-card">{renderedGames}</div>
         </div>
@@ -40,8 +40,8 @@ class GamesList extends React.Component {
     }
 
     return (
-      <div className="col" style={{ marginTop: "1em", marginLeft: "10em" }}>
-        <div className="card" style={{ width: "30em", height: "auto" }}>
+      <div className="col" style={{ marginTop: "1%", marginLeft: "3%" }}>
+        <div className="card" style={{ width: "100%", height: "auto" }}>
           <div
             className="card-header text-white text-center"
             style={{ background: "grey" }}

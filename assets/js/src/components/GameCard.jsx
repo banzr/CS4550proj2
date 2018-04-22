@@ -30,11 +30,12 @@ export default function GameCard({ gameId, game: { highscore, players } }) {
       style={{
         margin: "1em",
         border: "1px solid black",
-        width: "20em"
+        width: "90%"
+
       }}
     >
       {header}
-      <div className="card-body" style={{ width: "15em" }}>
+      <div className="card-body" style={{ width: "90%" }}>
         <div className="card-text">
           Players: {renderedPlayers}
           with high score {highscore}
