@@ -6,7 +6,7 @@ import { selectGameSessions } from "./selectors";
 
 class Game extends React.Component {
   renderList = (list, getData = x => x) => {
-    if (!list) return null;
+    if (!list) return "None";
     return <ol>{list.map((item, i) => <li key={i}>{getData(item)}</li>)}</ol>;
   };
 
@@ -28,7 +28,7 @@ class Game extends React.Component {
         <Heading text={`Sessions for Game ${gameId}`} />
         <table
           className="table"
-          style={{ width: "85em", marginLeft: "5%", marginTop: "1%" }}
+          style={{ width: "65em", marginLeft: "10%", marginTop: "1%" }}
         >
           <thead>
             <tr>
@@ -49,7 +49,9 @@ class Game extends React.Component {
                     <PlayerLink id={playerId} />
                   </td>
                   <td>{score}</td>
-                  <td>{renderQuestions(clues)}</td>
+                  <td style={{ width: "250px" }} class="col-md-3">
+                    {renderQuestions(clues)}
+                  </td>
                   <td>{renderAnswers(clues)}</td>
                   <td>{renderList(answers)}</td>
                 </tr>
