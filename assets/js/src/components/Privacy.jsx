@@ -9,7 +9,7 @@ export default function Privacy() {
 
       <p>
         Husky Jeopardy ("us", "we", or "our") operates the
-        jeopardy.cs4550.superkewl.xyz website (the "Service").
+        jeopardy.superkewl.xyz website (the "Service").
       </p>
 
       <p>
@@ -24,7 +24,7 @@ export default function Privacy() {
         Service, you agree to the collection and use of information in
         accordance with this policy. Unless otherwise defined in this Privacy
         Policy, terms used in this Privacy Policy have the same meanings as in
-        our Terms and Conditions, accessible from jeopardy.cs4550.superkewl.xyz
+        our Terms and Conditions, accessible from jeopardy.superkewl.xyz
       </p>
 
       <h2>Information Collection And Use</h2>
